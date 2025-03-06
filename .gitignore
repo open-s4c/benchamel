@@ -1,0 +1,5 @@
+build/
+compile_flags.txt
+.kakrc
+.clangd
+.cache
