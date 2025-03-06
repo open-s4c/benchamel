@@ -3,4 +3,5 @@ project(
     benchamel
     LANGUAGES C CXX)
 
+add_subdirectory(ConVul)
 add_subdirectory(libvsync)
