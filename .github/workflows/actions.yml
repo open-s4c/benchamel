@@ -4,12 +4,20 @@ jobs:
   Build:
     strategy:
       matrix:
+        toolchain:
+          - cc: "gcc"
+            cxx: "g++"
+          - cc: "clang"
+            cxx: "clang++"
         os: [ubuntu-22.04, ubuntu-24.04] #, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Configure
-        run: cmake -S. -Bbuild
+        run: |
+          cmake -S. -Bbuild \
+            -DCMAKE_C_COMPILER=${{ matrix.toolchain.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.toolchain.cxx }}
       - name: Build
         run: cmake --build build
