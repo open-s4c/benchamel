@@ -22,3 +22,9 @@ Project goals are:
 
 Each directory contains a LICENSE and a VERSION file indicating the respective
 license, software version and URL.
+
+# License
+
+Most subdirectories contain the license file under which the contents of the
+directory are distributed. Other software components in this repository are
+released under the MIT license (see [LICENSE](LICENSE)).
