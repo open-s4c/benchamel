@@ -4,6 +4,7 @@
 
 - ConVul
 - libvsync/SVCOMP v4.1.0
+- GitHub action with Ubuntu 22.04 and 24.04
 
 ## Fixed
 - convul/2016-9806: printf of pthread_self
