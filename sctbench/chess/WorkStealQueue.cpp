@@ -14,7 +14,7 @@ using namespace THE;
 
 #define INITQSIZE 2 // must be power of 2
 
-int nStealers = 1;
+int nStealers = 2;
 int nItems = 4;
 int nStealAttempts = 2;
 
