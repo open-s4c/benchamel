@@ -21,3 +21,20 @@ jobs:
             -DCMAKE_CXX_COMPILER=${{ matrix.toolchain.cxx }}
       - name: Build
         run: cmake --build build
+  Build-NetBSD:
+    runs-on: ubuntu-latest
+    name: Build (NetBSD 10.1)
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+    - name: Configure and Build
+      id: test
+      uses: vmactions/netbsd-vm@v1
+      with:
+        release: "10.1"
+        usesh: true
+        prepare: /usr/sbin/pkg_add curl cmake
+        run: |
+            cmake -S. -Bbuild
+            cmake --build build
+
