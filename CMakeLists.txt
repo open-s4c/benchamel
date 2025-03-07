@@ -8,3 +8,4 @@ set(CMAKE_EXECUTABLE_SUFFIX ".x")
 
 add_subdirectory(ConVul)
 add_subdirectory(libvsync)
+add_subdirectory(sctbench)
