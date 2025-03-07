@@ -9,7 +9,7 @@ jobs:
             cxx: "g++"
           - cc: "clang"
             cxx: "clang++"
-        os: [ubuntu-22.04, ubuntu-24.04] #, macos-latest]
+        os: [ubuntu-22.04, ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository code
@@ -21,6 +21,18 @@ jobs:
             -DCMAKE_CXX_COMPILER=${{ matrix.toolchain.cxx }}
       - name: Build
         run: cmake --build build
+
+  Build-macOS:
+    runs-on: macos-latest
+    name: Build (macOS latest)
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S. -Bbuild
+      - name: Build
+        run: cmake --build build
+
   Build-NetBSD:
     runs-on: ubuntu-latest
     name: Build (NetBSD 10.1)
