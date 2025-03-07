@@ -4,7 +4,7 @@ import pathlib
 from typing import Any, Dict, List
 
 from benchkit.benchmark import Benchmark
-from benchkit.utils.dir import get_curdir
+from benchkit.utils.dir import get_curdir, parentdir
 
 
 class Benchamel(Benchmark):
@@ -65,7 +65,7 @@ class Benchamel(Benchmark):
         output = self.run_bench_command(
             run_command=run_command,
             wrapped_run_command=run_command,
-            current_dir=self._build_dir,
+            current_dir=parentdir(test),
             environment=None,
             wrapped_environment=None,
             print_output=True,
