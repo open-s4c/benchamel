@@ -5,3 +5,4 @@ project(
 
 add_subdirectory(ConVul)
 add_subdirectory(libvsync)
+add_subdirectory(sctbench)
