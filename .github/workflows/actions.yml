@@ -1,0 +1,15 @@
+name: benchamel build checks
+on: [pull_request]
+jobs:
+  Build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04] #, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S. -Bbuild
+      - name: Build
+        run: cmake --build build
