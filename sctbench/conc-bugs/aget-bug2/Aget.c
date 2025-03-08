@@ -84,7 +84,7 @@ void startHTTP(struct request *req)
 again:
 			fprintf(stderr, "File already exists! Overwrite?(y/n) ");
 			//scanf("%2s", reply);
-			
+
 			//if(reply[0] == 'n')
 			//	exit(1);
 			//else if(reply[0] == 'y') {
@@ -170,7 +170,7 @@ retry:
 
 	/* Wait for all of the threads to finish... */
 	for (i = 0; i < nthreads; i++) {
-		if((int)wthread[i].tid != -1) {
+		if((uintptr_t)wthread[i].tid != (uintptr_t)-1) {
 			pthread_join(wthread[i].tid, NULL);
 			if (wthread[i].status == STAT_OK)
 				nok++;
@@ -179,7 +179,7 @@ retry:
 		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
 		 * signal handler won't wait for the same thread
 		 */
-		wthread[i].tid = -1;
+		wthread[i].tid = (pthread_t)(uintptr_t)-1;
 		pthread_testcancel();
 	}
 
@@ -217,7 +217,7 @@ void startFTP(struct request *req)
 	if(strlen(http_proxyhost) > 0) {
 		startHTTP(req);
 	}
-	
+
 	/* Should return the socket descriptor for the control connection in sd_c
  	 * and for the data connection in sd_d so that we can reuse it. That
 	 * reduces initial logon overhead. Currently returns a flag indicating
@@ -255,7 +255,7 @@ void startFTP(struct request *req)
 again:
 			fprintf(stderr, "File already exists! Overwrite?(y/n) ");
 			scanf("%2s", reply);
-			
+
 			if(reply[0] == 'n')
 				exit(1);
 			else if(reply[0] == 'y') {
@@ -305,7 +305,7 @@ retry:
 				wthread[i].offset - wthread[i].soffset);
 #endif
 	}
-	
+
 	/* Block out all signals */
 	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
@@ -330,7 +330,7 @@ retry:
 
 	/* Wait for all of the threads to finish... */
 	for (i = 0; i < nthreads; i++) {
-		if((int)wthread[i].tid != -1) {
+		if((uintptr_t)wthread[i].tid != (uintptr_t)-1) {
 			pthread_join(wthread[i].tid, NULL);
 			if (wthread[i].status == STAT_OK)
 				nok++;
@@ -338,7 +338,7 @@ retry:
 		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
 		 * signal handler won't wait for the same thread
 		 */
-		wthread[i].tid = -1;
+		wthread[i].tid = (pthread_t)(uintptr_t)-1;
 		pthread_testcancel();
 	}
 
@@ -426,7 +426,7 @@ retry:
 	pthread_testcancel();
 
 	for (i = 0; i < nthreads; i++) {
-		if((int)wthread[i].tid != -1) {
+		if((uintptr_t)wthread[i].tid != (uintptr_t)-1) {
 			pthread_join(wthread[i].tid, NULL);
 			if (wthread[i].status == STAT_OK)
 				nok++;
@@ -434,7 +434,7 @@ retry:
 		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
 		 * signal handler won't wait for the same thread
 		 */
-		wthread[i].tid = -1;
+		wthread[i].tid = (pthread_t)(uintptr_t)-1;
 		pthread_testcancel();
 	}
 

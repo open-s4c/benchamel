@@ -3,13 +3,14 @@
 
 #include "stringbuffer.hpp"
 
-StringBuffer *buffer = new StringBuffer("abc");
+StringBuffer *buffer = new StringBuffer((char*)"abc");
 
 void *thread_main(void *args) {
   //while (1) {
     buffer->erase(0, 3);
-    buffer->append("abc");
+    buffer->append((char*)"abc");
   //}
+    return 0;
 }
 
 int main(int argc, char *argv[]) {

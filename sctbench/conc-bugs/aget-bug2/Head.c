@@ -30,6 +30,12 @@
 #include <resolv.h>
 #endif
 
+#ifdef __APPLE__
+#define hstrerror(X) "error"
+#define	h_addr	h_addr_list[0]
+int snprintf(char * str, size_t size, const char * format, ...);
+char *strdup(const char *s1);
+#endif
 
 #include "Head.h"
 #include "Data.h"
@@ -73,7 +79,7 @@ void http_head_req(struct request *req)
 	rbuf = (char *)calloc(HEADREQSIZ, sizeof(char));
 
 	if ((he = gethostbyname(connect_host)) == NULL) {
-		Log("Error: Cannot resolve hostname for %s: %s", 
+		Log("Error: Cannot resolve hostname for %s: %s",
 				req->host,
 				hstrerror(h_errno));
 		exit(1);
@@ -92,7 +98,7 @@ void http_head_req(struct request *req)
 		exit(1);
 	}
 	Log("Head-Request Connection established");
-	
+
 	if(strlen(http_proxyhost) > 0) {
 		char tmp[MAXBUFSIZ];
 		snprintf(tmp, MAXBUFSIZ-1, "http://%s:%d%s", req->host, req->port, req->url);
@@ -150,7 +156,7 @@ int ftp_head_req(struct request *req, int *head_sd)
 	bzero(&sin, sizeof(sin));
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr =inet_addr(req->ip);
-	printf(req->ip);
+	printf("%s", req->ip);
 	sin.sin_port = htons(req->port);
 	if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
 		Log("Socket creation failed for Head Request: %s", strerror(errno));
@@ -269,7 +275,7 @@ int ftp_head_req(struct request *req, int *head_sd)
 	}
 	ret = recv_reply(sd, rbuf, MAXBUFSIZ, 0);
 	fprintf(stderr, "Server > %s\n", rbuf);
-	
+
 	Log("Content length: %d", req->clength);
 
 /*	close(sd);		*/
@@ -291,7 +297,7 @@ int parse_pasv_reply(char *rbuf, int len, struct sockaddr_in *sin)
 	unsigned short dc_port;
 	int i;
 	int slen;
-	
+
 
 	s = strdup(rbuf);
 	slen = strlen(rbuf);

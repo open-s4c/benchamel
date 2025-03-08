@@ -14,6 +14,11 @@
 #define _XOPEN_SOURCE 500
 
 #include <stdio.h>
+
+#ifdef __APPLE__
+int snprintf(char * str, size_t size, const char * format, ...);
+#endif
+
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,7 +67,7 @@ void *ftp_get(void *arg) {
 
 	td = (struct thread_data *)arg;
 	foffset = td->foffset;
-	
+
 	if(td->soffset < 0 || td->soffset >= td->foffset) {	/* If download complete */
 		td->status = STAT_OK;		/* Tell that download is OK. */
 		pthread_exit((void *)1);
@@ -77,12 +82,12 @@ void *ftp_get(void *arg) {
 			Log("<THREAD #%ld> socket creation failed: %s", tid, strerror(errno));
 			pthread_exit((void *)1);
 		}
-	
+
 		if ((connect(sd_c, (const struct sockaddr *)&td->sin, sizeof(struct sockaddr))) == -1) {
 			Log("<THREAD #%ld> connection failed: %s", tid, strerror(errno));
 			pthread_exit((void *)1);
 		}
-	
+
 		/* Should receive manually, cause some servers may not accept any connections!	*/
 		if(recv_reply(sd_c, rbuf, MAXBUFSIZ, 0) == -1) {
 			fprintf(stderr, "<<<<<----- %s", rbuf);
@@ -96,12 +101,12 @@ void *ftp_get(void *arg) {
 		}
 
 		if(rbuf[0] != '1' && rbuf[0] != '2' && rbuf[0] != '3') {
-			fprintf(stderr, rbuf);
+			fprintf(stderr, "%s", rbuf);
 			handleFTPRetcode(rbuf);
 			close(sd_c);
 			pthread_exit((void *)1);
 		}
-	
+
 		snprintf(sbuf, MAXBUFSIZ - 1, "USER %s\r\n", td->username);
 		memset(rbuf, 0, MAXBUFSIZ);
 		send(sd_c, sbuf, strlen(sbuf), 0);
@@ -167,7 +172,7 @@ void *ftp_get(void *arg) {
 	send(sd_c, sbuf, strlen(sbuf), 0);
 
 	td->offset = td->soffset;
-	
+
 	while (td->offset < foffset) {
 		/* Set Cancellation Type to Asynchronous
 		 * in case user needs to cancel recv().
@@ -175,7 +180,7 @@ void *ftp_get(void *arg) {
 		 */
 		pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
-		memset(rbuf, MAXBUFSIZ, 0);
+		memset(rbuf, MAXBUFSIZ, (0));
 		dr = recv_data(sd_d, rbuf, MAXBUFSIZ);
 
 		/* Set Cancellation Type back to Deferred */

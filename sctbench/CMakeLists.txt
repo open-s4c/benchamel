@@ -1,9 +1,6 @@
 # chess
 
-# for now we disable some sctbench tests on macOS
-if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    file(GLOB SRCS chess/*.cpp)
-endif()
+file(GLOB SRCS chess/*.cpp)
 foreach(SRC ${SRCS})
     get_filename_component(NAME ${SRC} NAME_WLE)
 	set(TARGET ${NAME})
@@ -13,14 +10,11 @@ endforeach()
 
 # aget
 
-# for now we disable some sctbench tests on macOS
-if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    file(GLOB SRCS conc-bugs/aget-bug2/*.c)
-    add_executable(aget ${SRCS})
-    target_link_libraries(aget pthread)
-    configure_file(conc-bugs/aget-bug2/0 0 COPYONLY)
-    configure_file(conc-bugs/aget-bug2/17573 17573 COPYONLY)
-endif()
+file(GLOB SRCS conc-bugs/aget-bug2/*.c)
+add_executable(aget ${SRCS})
+target_link_libraries(aget pthread)
+configure_file(conc-bugs/aget-bug2/0 0 COPYONLY)
+configure_file(conc-bugs/aget-bug2/17573 17573 COPYONLY)
 
 # pbzip2
 
