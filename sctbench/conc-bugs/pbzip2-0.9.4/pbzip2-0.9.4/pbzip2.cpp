@@ -1403,7 +1403,7 @@ int main(int argc, char* argv[])
 	int i, j, k;
 	int fileLoop;
 	int errLevel = 0;
-	
+
 	// get current time for benchmark reference
 	#ifndef WIN32
 	gettimeofday(&tvStartTime, &tz);
@@ -1459,12 +1459,12 @@ int main(int argc, char* argv[])
 						usage(argv[0]);
 					strncpy(cmdLineTemp, argv[i]+j+1, cmdLineTempCount);
 					numCPU = atoi(cmdLineTemp);
-					if (numCPU > 4096) 
+					if (numCPU > 4096)
 					{
 						fprintf(stderr," *ERROR: Maximal number of supported processors is 4096!  Aborting...\n");
 						return 1;
 					}
-					else if (numCPU < 1) 
+					else if (numCPU < 1)
 					{
 						fprintf(stderr," *ERROR: Minimum number of supported processors is 1!  Aborting...\n");
 						return 1;
@@ -1475,16 +1475,16 @@ int main(int argc, char* argv[])
 					#endif
 					break;
 				case 'b': cmdLineTempCount = 0; blockSize = 900000;
-					if (argv[i][j+1]) 
+					if (argv[i][j+1])
 					{
-						if ( argv[i][j+1] < '1' || argv[i][j+1] > '9' ) 
+						if ( argv[i][j+1] < '1' || argv[i][j+1] > '9' )
 						{
 							fprintf(stderr," *ERROR: Number 1-9 expected for a block size definition!  Aborting...\n");
 							return 1;
 						}
 						blockSize = (argv[i][j+1]-'0')*100000;
-					} 
-					else 
+					}
+					else
 					{
 						usage(argv[0]);
 					}
@@ -1535,7 +1535,7 @@ int main(int argc, char* argv[])
 		#endif
 		if (sizeof(off_t) <= 4)
 		{
-			fprintf(stderr, "\n *WARNING: off_t variable size only %d bits!\n", sizeof(off_t)*8);
+			fprintf(stderr, "\n *WARNING: off_t variable size only %lu bits!\n", sizeof(off_t)*8);
 			if (decompress == 1)
 				fprintf(stderr, " You will only able to uncompress files smaller than 2GB in size.\n\n");
 			else

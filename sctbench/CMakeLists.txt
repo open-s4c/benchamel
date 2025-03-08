@@ -1,9 +1,6 @@
 # chess
 
-# for now we disable some sctbench tests on macOS
-if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    file(GLOB SRCS chess/*.cpp)
-endif()
+file(GLOB SRCS chess/*.cpp)
 foreach(SRC ${SRCS})
     get_filename_component(NAME ${SRC} NAME_WLE)
 	set(TARGET ${NAME})

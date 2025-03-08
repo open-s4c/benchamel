@@ -33,7 +33,7 @@ public:
 		pc = 0;
 	}
 
-public: 
+public:
 	void Update(int pc0)
 	{
 		pc = pc0;
@@ -48,15 +48,15 @@ public:
 	}
 };
 
-struct State 
+struct State
 {
 public:
-	std::vector<std::vector<ActivationRecord>> stacks;
-	
+	std::vector<std::vector<ActivationRecord> > stacks;
+
 	State() {
 	  stacks.reserve(100);
 	}
-	
+
 	void Push(int tid, int fname)
 	{
 		ActivationRecord ar;
@@ -93,7 +93,7 @@ public:
 State state;
 
 	// SpinLock
-	//  
+	//
 #ifndef USE_NON_BLOCKING_SYNC
 class SpinLock {
 
@@ -104,7 +104,7 @@ class SpinLock {
       pthread_mutex_init(&cs, NULL);
     }
 
-    void Acquire() 
+    void Acquire()
     {
       pthread_mutex_lock(&cs);
     }
@@ -149,7 +149,7 @@ class SpinLock {
 			 void Acquire(int tid) {
 				state.Push(tid, F_Acquire);
 				ActivationRecord& ar = state.Peek(tid);
-			
+
 				 PVOID old;
 				 ULONG retries = 0;
 
@@ -256,12 +256,12 @@ class SpinLock {
 	// private:
 	public:
 
-		volatile std::atomic<LONG> head;  // only updated by Take 
-		volatile std::atomic<LONG> tail;  // only updated by Push and Pop 
-		T *  elems;         // the array of tasks 
-		LONG mask;           // the mask for taking modulus 
+		volatile std::atomic<LONG> head;  // only updated by Take
+		volatile std::atomic<LONG> tail;  // only updated by Push and Pop
+		T *  elems;         // the array of tasks
+		LONG mask;           // the mask for taking modulus
 
-		LONG readV(volatile std::atomic<long> & v) { 
+		LONG readV(volatile std::atomic<long> & v) {
 		  //long t = InterlockedCompareExchange(&v, 0, 0);
       long expected = 0;
       const long desired = 0;
@@ -269,7 +269,7 @@ class SpinLock {
       //return t;
       return expected;
 		}
-		void writeV(volatile std::atomic<long> & v, long w) { 
+		void writeV(volatile std::atomic<long> & v, long w) {
       //InterlockedExchange(&v, w);
       v.exchange(w);
     }
@@ -277,7 +277,7 @@ class SpinLock {
 	public:
 
 		WorkStealQueue(LONG size = MaxSize)
-		{      
+		{
 			head = 0;
 			tail = 0;
 			mask = size - 1;
@@ -287,7 +287,7 @@ class SpinLock {
 			}
 		}
 
-		~WorkStealQueue() 
+		~WorkStealQueue()
 		{
 			delete[] elems;
 		}
@@ -328,7 +328,7 @@ class SpinLock {
 
 			// ensure that at most one (foreign) thread writes to head
 			// increment the head. Save in local h for efficiency
-			
+
 			// pc == 1
 			state.Peek(tid).Update(1);
 			LONG h = readV(head);
@@ -373,7 +373,7 @@ class SpinLock {
 
 			bool retVal;
 			// decrement the tail. Use local t for efficiency.
-			
+
 			// pc == 0
 			state.Peek(tid).Update(0);
 			LONG t = readV(tail) - 1;
@@ -399,7 +399,7 @@ class SpinLock {
 				// failure: either empty or single element interleaving with take
 				// pc == 3
 				state.Peek(tid).Update(3);
-				writeV(tail, t + 1);             // restore the tail 
+				writeV(tail, t + 1);             // restore the tail
 
 				retVal = SyncPop(result, tid);   // do a single-threaded pop
 			}
@@ -534,7 +534,7 @@ class SpinLock {
 			this->Acquire(tid);
 			// ensure that no Steal interleaves here
 			// cache head, and calculate number of tasks
-			
+
 			// pc == 1
 			state.Peek(tid).Update(1);
 			LONG h = readV(head);

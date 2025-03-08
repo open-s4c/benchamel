@@ -8,7 +8,7 @@
 #include <cstring>
 #include <pthread.h>
 
-StringBuffer *StringBuffer::null_buffer = new StringBuffer("null");
+StringBuffer *StringBuffer::null_buffer = new StringBuffer((char*)"null");
 
 StringBuffer::StringBuffer() {
   value = new char[16];
@@ -79,7 +79,7 @@ StringBuffer *StringBuffer::append(StringBuffer *sb) {
 StringBuffer *StringBuffer::append(char *str) {
   pthread_mutex_lock(&mutex_lock);
   if (str == NULL) {
-    str = "null";
+    str = (char*)"null";
   }
 
 	int len = strlen(str);
