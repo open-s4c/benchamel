@@ -42,11 +42,11 @@ int args(int argc, char** argv){
 			nStealAttempts = arg3;
 		}
 	}
-	std::cout << "\nWorkStealQueue Test: " 
-		<< nStealers << " stealers, " 
+	std::cout << "\nWorkStealQueue Test: "
+		<< nStealers << " stealers, "
 		<< nItems << " items, "
 		<< "and "
-		<< nStealAttempts << " stealAttempts" 
+		<< nStealAttempts << " stealAttempts"
 		<< std::endl;
 	return 0;
 }
@@ -74,12 +74,12 @@ void* Stealer(void* param){
 	WorkStealQueue<ObjType*> *q = queue;
 	ActivationRecord& ar = state.Peek(tid);
 
-	ObjType* r; 
+	ObjType* r;
 	for(int i=0; i<nStealAttempts; i++){
 		// pc == 0
-		state.Peek(tid).Update(0, 0, (void *) i);
-		if (q->Steal(r, tid)) 
-			r->Operation(); 
+		state.Peek(tid).Update(0, 0, (void*)(uintptr_t) i);
+		if (q->Steal(r, tid))
+			r->Operation();
 	}
 
 	state.Pop(tid);
@@ -102,8 +102,8 @@ int main(int argc, char** argv) {
 
 	for (int i = 0; i < nStealers; i++) {
 		// pc == 0
-		state.Peek(tid).Update(0, 0, (void *) i);
-		pthread_create(&handles[i], NULL, Stealer, (void*)(i+1));
+		state.Peek(tid).Update(0, 0, (void*)(uintptr_t) i);
+		pthread_create(&handles[i], NULL, Stealer, (void*)(uintptr_t)(i+1));
 	}
 
 	//for (int i = 0; i < nItems/2; i++) {
@@ -118,30 +118,30 @@ int main(int argc, char** argv) {
 	//	ObjType* r;
 	//	// pc == 3
 	//	state.Peek(tid).Update(3, 0, (void *) i);
-	//	if (q->Pop(r, tid)) 
-	//		r->Operation(); 
+	//	if (q->Pop(r, tid))
+	//		r->Operation();
 	//}
 
 	//for (int i = 0; i < nItems/2; i++) {
-	//	ObjType* r; 
+	//	ObjType* r;
 	//	// pc == 4
 	//	state.Peek(tid).Update(4, 0, (void *) i);
-	//	if (q->Pop(r, tid)) 
-	//		r->Operation(); 
+	//	if (q->Pop(r, tid))
+	//		r->Operation();
 	//}
 
 	for (int i = 0; i < nItems; i++) {
 		// pc == 1
-		state.Peek(tid).Update(1, 0, (void *) i);
+		state.Peek(tid).Update(1, 0, (void*)(uintptr_t) i);
 		q->Push(&items[i], tid);
 	}
 
 	for (int i = 0; i < nItems; i++) {
-		ObjType* r; 
+		ObjType* r;
 		// pc == 4
-		state.Peek(tid).Update(4, 0, (void *) i);
-		if (q->Pop(r, tid)) 
-			r->Operation(); 
+		state.Peek(tid).Update(4, 0, (void*)(uintptr_t) i);
+		if (q->Pop(r, tid))
+			r->Operation();
 	}
 
 	// pc == 5
@@ -167,7 +167,10 @@ int main(int argc, char** argv) {
 #include <stdio.h>
 int GetState(char* buf, int len)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	std::ostrstream o;
+#pragma GCC diagnostic pop
 	o << "Q";
 
 	//Write queue
