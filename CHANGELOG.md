@@ -25,6 +25,11 @@
 - sctbench/pbzip2.cpp: fix `printf` format string
 - sctbench/stringbuffer-jdk: cast string literal as `char *`
 - sctbench/stringbuffer-jdk: thread routine returns ww0
+- sctbench/aget: add intermediate cast to `uintptr_t`
+- sctbench/aget: declare `snprintf` and `strdup` on macOS
+- sctbench/aget: declare mock `hstrerror` on macOS
+- sctbench/aget: fix `printf` format string
+- sctbench/aget: define `h_addr` on macOS
 
 ## Added
 - build action for macOS

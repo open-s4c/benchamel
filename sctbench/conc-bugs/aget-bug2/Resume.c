@@ -75,7 +75,7 @@ void save_log()
 	//	fprintf(stderr, "Cannot open log file %s for writing: %s\n", logfile, strerror(errno));
 	//	exit(1);
 	//}
-	
+
 	/* Get the finish time, derive some stats */
 	time(&t_finish);
        	if ((diff_sec = t_finish - t_start) == 0)
@@ -98,7 +98,7 @@ void save_log()
     for (i = 0; i < h.nthreads; i++) {
 		total_bwritten += (h.wthread[i].offset - h.wthread[i].soffset);
 	}
-	printf("total bytes: %d, log file total bytes: %d\n", total_bwritten, h.bwritten);
+	printf("total bytes: %ld, log file total bytes: %d\n", total_bwritten, h.bwritten);
 	assert(total_bwritten == h.bwritten);
 }
 
