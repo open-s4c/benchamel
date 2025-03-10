@@ -22,6 +22,9 @@
 - sctbench/chess: space between consecutive right angle brackets
 - sctbench/chess: add intermediate cast to `uintptr_t`
 - sctbench/chess: disable deprecation warning for std::strstream
+- sctbench/pbzip2.cpp: fix `printf` format string
+- sctbench/stringbuffer-jdk: cast string literal as `char *`
+- sctbench/stringbuffer-jdk: thread routine returns ww0
 
 ## Added
 - build action for macOS
@@ -41,4 +44,3 @@
 - convul/2016-9806: `printf` of `pthread_self`
 - convul/2017-6346: `posix_memalign` instead of `memalign`
 - convul/2017-15265: `posix_memalign` instead of `memalign`
-
