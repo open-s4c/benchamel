@@ -25,6 +25,12 @@
 - sctbench/pbzip2.cpp: fix `printf` format string
 - sctbench/stringbuffer-jdk: cast string literal as `char *`
 - sctbench/stringbuffer-jdk: thread routine returns ww0
+- sctbench/concurrent-software-benchmarks/reorder_3_bad.c: replaced with a version of `reorder_bad.c.skip` with `iSet` set to 2
+- sctbench/concurrent-software-benchmarks/reorder_4_bad.c: replaced with a version of `reorder_bad.c.skip` with `iSet` set to 3
+- sctbench/concurrent-software-benchmarks/reorder_5_bad.c: replaced with a version of `reorder_bad.c.skip` with `iSet` set to 4
+- sctbench/concurrent-software-benchmarks/reorder_10_bad.c: replaced with a copy of `reorder_bad.c.skip`
+- sctbench/concurrent-software-benchmarks/reorder_20_bad.c: replaced with a version of `reorder_bad.c.skip` with `iSet` and `iCheck` set to 10
+- sctbench/concurrent-software-benchmarks/wronglock_3_bad.c: replaced with a version of `wronglock_bad.c` with `iNum2` set to 3
 
 ## Added
 - build action for macOS
