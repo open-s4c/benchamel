@@ -13,6 +13,7 @@ void *deposit(void *arg)
   balance = balance + y;
   deposit_done=1;
   pthread_mutex_unlock(&m);
+  return NULL;
 }
 
 void *withdraw(void *arg) 
@@ -21,6 +22,7 @@ void *withdraw(void *arg)
   balance = balance - z;
   withdraw_done=1;
   pthread_mutex_unlock(&m);
+  return NULL;
 }
 
 void *check_result(void *arg) 
@@ -29,6 +31,7 @@ void *check_result(void *arg)
   if (deposit_done && withdraw_done)
     assert(balance == (x - y) - z); /* BAD */
   pthread_mutex_unlock(&m);
+  return NULL;
 }
 
 int main() 

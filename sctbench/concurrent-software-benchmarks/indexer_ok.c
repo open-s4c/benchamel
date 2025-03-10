@@ -51,6 +51,7 @@ void * thread_routine(void * arg)
     }
   }
 
+  return NULL;
 }
 
 

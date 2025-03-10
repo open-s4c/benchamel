@@ -25,6 +25,7 @@ void *thread1(void *arg)
   pthread_mutex_unlock(&x[left]);
   pthread_mutex_unlock(&x[right]);
   __ESBMC_atomic_end();
+  return NULL;
 }
 
 int main()

@@ -32,6 +32,7 @@ void *thread1(void *arg)
   if (phil==N)
     assert(0);
   __ESBMC_atomic_end();
+  return NULL;
 }
 
 int main()

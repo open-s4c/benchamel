@@ -13,6 +13,7 @@ void *thread1(void *arg)
   pthread_mutex_unlock(&y);
   pthread_mutex_lock(&y);
   pthread_mutex_unlock(&y);
+  return NULL;
 }
 
 

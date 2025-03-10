@@ -117,6 +117,7 @@ void* t1(void* arg)
 // 100
   if (x<=0)
     assert(0);
+  return NULL;
 }
 
 void* t2(void* arg)
@@ -234,6 +235,7 @@ void* t2(void* arg)
   //assert(200<x);
   if (x<=0)
     assert(0);
+  return NULL;
 }
 
 int main(void)

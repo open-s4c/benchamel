@@ -9,6 +9,7 @@ void *thread1(void *arg)
   pthread_mutex_lock(&mutex);
   data++;
   pthread_mutex_unlock(&mutex);
+  return NULL;
 }
 
 
@@ -17,6 +18,7 @@ void *thread2(void *arg)
   pthread_mutex_lock(&mutex);
   data+=2;
   pthread_mutex_unlock(&mutex);
+  return NULL;
 }
 
 
@@ -26,7 +28,8 @@ void *thread3(void *arg)
   if (data >= 3){
     //assert(0);
   }
-  pthread_mutex_unlock(&mutex);    
+  pthread_mutex_unlock(&mutex);
+  return NULL;
 }
 
 

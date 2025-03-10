@@ -20,6 +20,7 @@ void * thread1(void * arg)
 
   pthread_mutex_unlock(&m);
   pthread_cond_signal(&full);
+  return NULL;
 }
 
 
@@ -38,6 +39,7 @@ void * thread2(void * arg)
 
   pthread_cond_signal(&empty);
 #endif
+  return NULL;
 }
 
 

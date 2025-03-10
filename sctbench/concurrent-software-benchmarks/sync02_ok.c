@@ -27,6 +27,7 @@ void * thread1(void * arg)
 
     i++;
   }
+  return NULL;
 }
 
 

@@ -31,6 +31,7 @@ void* producer(void* argv)
     qsize ++;    
     pthread_mutex_unlock(&mux);
   }
+  return NULL;
 }
 
 
@@ -51,6 +52,7 @@ void* consumer(void* argv)
     qsize --;
     pthread_mutex_unlock(&mux);
   }
+  return NULL;
 }
 
 

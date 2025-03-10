@@ -68,7 +68,8 @@ void *t1(void *arg)
       receive=TRUE;
     }
     pthread_mutex_unlock(&m);
-  }  
+  }
+  return NULL;
 }
 
 void *t2(void *arg) 
@@ -86,6 +87,7 @@ void *t2(void *arg)
     }
     pthread_mutex_unlock(&m);
   }
+  return NULL;
 }
 
 int main() 

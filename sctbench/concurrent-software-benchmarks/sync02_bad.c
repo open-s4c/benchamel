@@ -13,7 +13,9 @@ void* producer(void* arg) {
     pthread_mutex_unlock(&m);
     pthread_cond_signal(&full);
     i++;
-} }
+  }
+  return NULL;
+}
 void* consumer(void* arg) {
   int j = 0;
   while (j < N){
@@ -24,7 +26,9 @@ void* consumer(void* arg) {
     pthread_mutex_unlock(&m);    
     pthread_cond_signal(&empty);
     j++;    
-} } 
+  }
+  return NULL;
+} 
 int main() {
   pthread_t  id1, id2;
   num = 2;

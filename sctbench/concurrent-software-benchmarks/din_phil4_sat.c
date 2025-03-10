@@ -30,6 +30,7 @@ void *thread1(void *arg)
   ++phil;
   if (phil==N)
     assert(0);
+  return NULL;
 }
 
 int main()

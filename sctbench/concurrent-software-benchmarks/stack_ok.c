@@ -74,6 +74,7 @@ void *t1(void *arg)
     assert(push(arr,i)!=OVERFLOW);
     pthread_mutex_unlock(&m);
   }
+  return NULL;
 }
 
 void *t2(void *arg) 
@@ -87,6 +88,7 @@ void *t2(void *arg)
       pop(arr);    
     pthread_mutex_unlock(&m);
   }
+  return NULL;
 }
 
 

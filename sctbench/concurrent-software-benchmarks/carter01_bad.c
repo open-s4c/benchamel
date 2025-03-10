@@ -11,6 +11,7 @@ void *t1(void *arg) {
   A--;
   if (A == 0) pthread_mutex_unlock(&l);
   pthread_mutex_unlock(&m);
+  return NULL;
 }
 void *t2(void *arg) {
   pthread_mutex_lock(&m);
@@ -22,10 +23,13 @@ void *t2(void *arg) {
   B--;
   if (B == 0) pthread_mutex_unlock(&l);
   pthread_mutex_unlock(&m);
+  return NULL;
 }
 void *t3(void *arg) {
+  return NULL;
 }
 void *t4(void *arg) {
+  return NULL;
 }
 int main(void) {
   pthread_mutex_init(&m,NULL);

@@ -116,6 +116,7 @@ void* t1(void* arg)
   x++;
 // 100
   assert(0<x);
+  return NULL;
 }
 
 void* t2(void* arg)
@@ -231,6 +232,7 @@ void* t2(void* arg)
   x++;
 // 100
   assert(0<x);
+  return NULL;
 }
 
 void* t3(void* arg)
@@ -346,6 +348,7 @@ void* t3(void* arg)
   x++;
 // 100
   assert(0<x);
+  return NULL;
 }
 
 int main(void)

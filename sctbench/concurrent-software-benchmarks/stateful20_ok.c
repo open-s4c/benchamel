@@ -17,6 +17,7 @@ void * thread1(void * arg)
     data+=5;
     pthread_mutex_unlock(&ma);
   }
+  return NULL;
 }
 
 
@@ -34,6 +35,7 @@ void * thread2(void * arg)
     pthread_mutex_unlock(&ma);
     
   }
+  return NULL;
 }
 
 

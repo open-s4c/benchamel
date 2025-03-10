@@ -66,6 +66,7 @@ void* BCSP_PnpStop(void* arg)
     //release allocated resource
     stopped = TRUE;
   }
+  return NULL;
 }
 
 void main() 

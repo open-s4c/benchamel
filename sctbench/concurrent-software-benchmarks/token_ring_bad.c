@@ -17,6 +17,7 @@ void *t1(void *arg)
     x1 = (x3+1)%4;
   flag1=1;
   __ESBMC_atomic_end();
+  return NULL;
 }
 
 void *t2(void *arg)
@@ -25,6 +26,7 @@ void *t2(void *arg)
     x2 = x1;
   flag2=1;
   __ESBMC_atomic_end();
+  return NULL;
 }
 
 void *t3(void *arg)
@@ -33,6 +35,7 @@ void *t3(void *arg)
     x3 = x2;
   flag3=1;
   __ESBMC_atomic_end();
+  return NULL;
 }
 
 void *t4(void *arg)
@@ -41,6 +44,7 @@ void *t4(void *arg)
   if (flag1 && flag2 && flag3)
     assert(x1 == x2 && x2 == x3); /* BAD */
   __ESBMC_atomic_end();
+  return NULL;
 }
 
 int main()

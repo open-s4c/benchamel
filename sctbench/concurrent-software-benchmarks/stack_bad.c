@@ -75,6 +75,7 @@ void *t1(void *arg)
     flag=TRUE;
     pthread_mutex_unlock(&m);
   }
+  return NULL;
 }
 
 void *t2(void *arg) 
@@ -88,6 +89,7 @@ void *t2(void *arg)
       assert(pop(arr)!=UNDERFLOW); /* BAD */
     pthread_mutex_unlock(&m);
   }
+  return NULL;
 }
 
 
