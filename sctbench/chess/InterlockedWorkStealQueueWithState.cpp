@@ -41,11 +41,11 @@ int args(int argc, char** argv){
 			nStealAttempts = arg3;
 		}
 	}
-	std::cout << "\nWorkStealQueue Test: " 
-		<< nStealers << " stealers, " 
+	std::cout << "\nWorkStealQueue Test: "
+		<< nStealers << " stealers, "
 		<< nItems << " items, "
 		<< "and "
-		<< nStealAttempts << " stealAttempts" 
+		<< nStealAttempts << " stealAttempts"
 		<< std::endl;
 	return 0;
 }
@@ -73,12 +73,12 @@ void* Stealer(void* param){
 	WorkStealQueue<ObjType*> *q = queue;
 	ActivationRecord& ar = state.Peek(tid);
 
-	ObjType* r; 
+	ObjType* r;
 	for(int i=0; i<nStealAttempts; i++){
 		// pc == 0
-		state.Peek(tid).Update(0, 0, (void *) i);
-		if (q->Steal(r, tid)) 
-			r->Operation(); 
+		state.Peek(tid).Update(0, 0, (void *)(uintptr_t) i);
+		if (q->Steal(r, tid))
+			r->Operation();
 	}
 
 	state.Pop(tid);
@@ -100,31 +100,31 @@ int main(int argc, char** argv){
 	ActivationRecord& ar = state.Peek(tid);
 
 	for (int i = 0; i < nStealers; i++) {
-		pthread_create(&handles[i], NULL, Stealer, (void*)(i+1));
+		pthread_create(&handles[i], NULL, Stealer, (void*)(uintptr_t)(i+1));
 	}
 
 	for (int i = 0; i < nItems/2; i++) {
 		// pc == 1
-		state.Peek(tid).Update(1, 0, (void *) i);
+		state.Peek(tid).Update(1, 0, (void *)(uintptr_t) i);
 		q->Push(&items[2*i], tid);
 
 		// pc == 2
-		state.Peek(tid).Update(2, 0, (void *) i);
+		state.Peek(tid).Update(2, 0, (void *)(uintptr_t) i);
 		q->Push(&items[2*i+1], tid);
 
 		ObjType* r;
 		// pc == 3
-		state.Peek(tid).Update(3, 0, (void *) i);
-		if (q->Pop(r, tid)) 
-			r->Operation(); 
+		state.Peek(tid).Update(3, 0, (void *)(uintptr_t) i);
+		if (q->Pop(r, tid))
+			r->Operation();
 	}
 
 	for (int i = 0; i < nItems/2; i++) {
-		ObjType* r; 
+		ObjType* r;
 		// pc == 4
-		state.Peek(tid).Update(4, 0, (void *) i);
-		if (q->Pop(r, tid)) 
-			r->Operation(); 
+		state.Peek(tid).Update(4, 0, (void *)(uintptr_t) i);
+		if (q->Pop(r, tid))
+			r->Operation();
 	}
 
 	// pc == 5
@@ -148,7 +148,10 @@ int main(int argc, char** argv){
 
 int GetState(char* buf, int len)
 {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	std::strstream o;
+#pragma GCC diagnostic pop
 	o << "Q";
 
 	// Write queue
@@ -186,4 +189,3 @@ int GetState(char* buf, int len)
 	memcpy(buf, o.str(), len);
 	return ret;
 }
-

@@ -19,6 +19,9 @@
 - convul/2009-3547: thread routines return 0
 - convul/2016-1972: thread routine returns 0
 - convul/2016-1972: fix `printf` format string
+- sctbench/chess: space between consecutive right angle brackets
+- sctbench/chess: add intermediate cast to `uintptr_t`
+- sctbench/chess: disable deprecation warning for std::strstream
 
 ## Added
 - build action for macOS
