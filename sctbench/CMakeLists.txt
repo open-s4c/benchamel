@@ -8,7 +8,7 @@ foreach(SRC ${SRCS})
 	target_link_libraries(${TARGET} pthread)
 endforeach()
 
-# aget
+# conc-bugs/aget
 
 # for now we disable some sctbench tests on macOS
 if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
@@ -19,7 +19,7 @@ if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     configure_file(conc-bugs/aget-bug2/17573 17573 COPYONLY)
 endif()
 
-# pbzip2
+# conc-bugs/pbzip2
 
 set(SRCS blocksort.c huffman.c crctable.c randtable.c compress.c decompress.c bzlib.c)
 list(TRANSFORM SRCS PREPEND conc-bugs/pbzip2-0.9.4/bzip2-1.0.6/)
@@ -34,3 +34,12 @@ configure_file(conc-bugs/pbzip2-0.9.4/test.tar test.tar COPYONLY)
 file(GLOB SRCS conc-bugs/stringbuffer-jdk1.4/*.cpp)
 add_executable(stringbuffer ${SRCS})
 target_link_libraries(stringbuffer pthread)
+
+# concurrent-software-benchmarks
+file(GLOB SRCS concurrent-software-benchmarks/*.c)
+foreach(SRC ${SRCS})
+    get_filename_component(NAME ${SRC} NAME_WLE)
+	set(TARGET ${NAME})
+	add_executable(${TARGET} ${SRC})
+	target_link_libraries(${TARGET} pthread)
+endforeach()
