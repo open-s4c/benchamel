@@ -359,5 +359,9 @@ int main(void)
   pthread_create(&id[1], NULL, &t2, NULL);
   pthread_create(&id[2], NULL, &t3, NULL);
 
+  pthread_join(id[0], NULL);
+  pthread_join(id[1], NULL);
+  pthread_join(id[2], NULL);
+
   return 0;
 }

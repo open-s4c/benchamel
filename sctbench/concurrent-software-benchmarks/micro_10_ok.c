@@ -1170,5 +1170,17 @@ int main(void)
   pthread_create(&id[7], NULL, &t8, NULL);
   pthread_create(&id[8], NULL, &t9, NULL);
   pthread_create(&id[9], NULL, &t10, NULL);
+
+  pthread_join(id[0], NULL);
+  pthread_join(id[1], NULL);
+  pthread_join(id[2], NULL);
+  pthread_join(id[3], NULL);
+  pthread_join(id[4], NULL);
+  pthread_join(id[5], NULL);
+  pthread_join(id[6], NULL);
+  pthread_join(id[7], NULL);
+  pthread_join(id[8], NULL);
+  pthread_join(id[9], NULL);
+
   return 0;
 }

@@ -56,6 +56,11 @@ int main()
   pthread_create(&id3, NULL, t3, NULL);
   pthread_create(&id3, NULL, t4, NULL);
 
+  pthread_join(id1, NULL);
+  pthread_join(id2, NULL);
+  pthread_join(id3, NULL);
+  pthread_join(id4, NULL);
+
   return 0;
 }
 
