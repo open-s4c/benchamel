@@ -49,5 +49,9 @@ int main()
   pthread_create(&t1, 0, deposit, 0);
   pthread_create(&t2, 0, withdraw, 0);
 
+  pthread_join(t3, NULL);
+  pthread_join(t1, NULL);
+  pthread_join(t2, NULL);
+
   return 0;
 }

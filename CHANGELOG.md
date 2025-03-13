@@ -71,6 +71,12 @@
 - sctbench/concurrent-software-benchmarks/sync02_bad.c: thread routines return 0
 - sctbench/concurrent-software-benchmarks/sync02_ok.c: thread routines return 0
 - sctbench/concurrent-software-benchmarks/token_ring_bad.c: thread routines return 0
+- sctbench/concurrent-software-benchmarks/account_bad.c: add `pthread_join()`
+- sctbench/concurrent-software-benchmarks/account_ok.c: add `pthread_join()`
+- sctbench/concurrent-software-benchmarks/micro_10_ok.c: add `pthread_join()`
+- sctbench/concurrent-software-benchmarks/micro_2_ok.c: add `pthread_join()`
+- sctbench/concurrent-software-benchmarks/micro_3_ok.c: add `pthread_join()`
+- sctbench/concurrent-software-benchmarks/token_ring_bad.c: add `pthread_join()`
 
 ## Added
 - build action for macOS
