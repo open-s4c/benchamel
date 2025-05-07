@@ -286,7 +286,7 @@ void * consumer_routine(void * arg)
 
 bounded_buf_t buffer;
 
-int main(int argc, char * argv)
+int main(int argc, char ** argv)
 {
   thread_t producers[PRODUCER_SUM];
   thread_t consumers[CONSUMER_SUM];    

@@ -2,7 +2,6 @@
 #include <pthread.h>    // all phils but "odd" one pickup their
 #include <stdio.h>      // left fork first; odd phil picks
 #include <string.h>     // up right fork first
-#include <malloc.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <assert.h>

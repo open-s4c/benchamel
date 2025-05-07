@@ -89,6 +89,11 @@
 - sctbench/inspect_benchmarks/qsort.comb.c: add support for macOS and NetBSD
 - sctbench/inspect_benchmarks/qsort.comb.c: fix `printf` format string
 - sctbench/inspect_examples/nedmalloc_test.comb.c: replace `pthread_mutexattr_setkind_np()` with `pthread_mutexattr_settype()`
+- sctbench/inspect_examples/Dining2.c: exclude `malloc.h`
+- sctbench/inspect_examples/Dining3.c: exclude `malloc.h`
+- sctbench/inspect_examples/Dining4.c: exclude `malloc.h`
+- sctbench/inspect_examples/Dining5.c: exclude `malloc.h`
+- sctbench/inspect_examples/bbuf.c: correct type for `argv`
 
 ## Added
 - build action for macOS
