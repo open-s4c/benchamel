@@ -2,12 +2,12 @@
 An example of how to use nedalloc
 (C) 2005-2007 Niall Douglas
 */
-
+#define _GNU_SOURCE 1
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
-#define _GNU_SOURCE 
 #include <sys/mman.h>
+#include <sys/time.h>
+#include <unistd.h>
 
 
 #ifndef NEDMALLOC_H

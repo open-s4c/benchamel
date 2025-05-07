@@ -1,4 +1,5 @@
 #include <pthread.h>
+#include <stdio.h>
 
 
 #define  N  1

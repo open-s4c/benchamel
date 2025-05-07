@@ -114,7 +114,10 @@
 - sctbench/inspect_examples/ctrace.foobar.comb.c: add a `void*` parameter to `trc_start_server()`
 - sctbench/inspect_examples/nedmalloc_test.comb.c: include `sys/time.h`
 - sctbench/inspect_examples/nedmalloc_test.comb.c: include `sys/mman.h`
+- sctbench/inspect_examples/nedmalloc_test.comb.c: include `unistd.h`
 - sctbench/inspect_examples/pfscan.comb.c: correct return type in `pqueue_init()`
+- sctbench/inspect_examples/sync01.c: include `stdio.h`
+- sctbench/inspect_examples/sync02.c: include `stdio.h`
 
 ## Added
 - build action for macOS
