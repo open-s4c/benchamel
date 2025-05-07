@@ -78,7 +78,7 @@ static void *tp_manage_thread(void *pthread);
 static TPBOOL tp_init(tp_thread_pool *this);
 static void tp_close(tp_thread_pool *this);
 static void tp_process_job(tp_thread_pool *this, tp_work *worker, tp_work_desc *job);
-static int  tp_get_thread_by_id(tp_thread_pool *this, int id);
+static int  tp_get_thread_by_id(tp_thread_pool *this, pthread_t id);
 static TPBOOL tp_add_thread(tp_thread_pool *this);
 static TPBOOL tp_delete_thread(tp_thread_pool *this);
 static int  tp_get_tp_status(tp_thread_pool *this);
