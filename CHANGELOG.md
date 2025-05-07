@@ -98,11 +98,13 @@
 - sctbench/inspect_examples/bbuf.c: exclude `malloc.h`
 - sctbench/inspect_examples/ctrace-test.c: include `unistd.h`
 - sctbench/inspect_examples/ctrace-test.c: include `string.h`
+- sctbench/inspect_examples/ctrace-test.c: include `stdlib.h`
 - sctbench/inspect_examples/ctrace-test.c: correct assignment to `t->fmt[0]`
 - sctbench/inspect_examples/ctrace-test.c: declare `trc_stop_client()`
 - sctbench/inspect_examples/ctrace-test.c: declare `trc_start_client()`
 - sctbench/inspect_examples/philosopher.c: correct type for `argv`
 - sctbench/inspect_examples/boundedBuffer.c: exclude `malloc.h`
+- sctbench/inspect_examples/thread-pool.example.c: return `NULL` in `tp_work_thread()`
 
 ## Added
 - build action for macOS

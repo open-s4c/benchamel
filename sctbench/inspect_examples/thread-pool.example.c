@@ -370,7 +370,7 @@ static void *tp_work_thread(void *pthread){
 	//get current thread's seq in the thread info struct array.
 	nseq = this->get_thread_by_id(this, curid);
 	if(nseq < 0)
-		return;
+		return NULL;
 	printf("entering working thread %d, thread id is %d\n", nseq, curid);
 
 	//wait cond for processing real job.
@@ -398,7 +398,8 @@ static void *tp_work_thread(void *pthread){
 		pthread_mutex_unlock(&this->thread_info[nseq].thread_lock);
 		
 		printf("%d do work over\n", pthread_self());
-	}	
+	}
+	return NULL;
 }
 
 /**

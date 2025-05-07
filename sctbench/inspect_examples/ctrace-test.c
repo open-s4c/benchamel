@@ -13,6 +13,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define _STDOUT		stdout
 #define _STDERR		stderr
