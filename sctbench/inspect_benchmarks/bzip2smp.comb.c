@@ -6120,11 +6120,8 @@ int main(int argc, char *argv[])
   }
 
   FILE * input_file, * output_file;
-  input_file = fopen(argv[x], "r+");
-  output_file = fopen(argv[x+1], "w+");
-
-  stdin = input_file;
-  stdout = output_file;
+  input_file = freopen(argv[x], "r+", stdin);
+  output_file = freopen(argv[x+1], "w+", stdout);
 
   if ( isatty ( fileno ( stdout ) ) )
   {

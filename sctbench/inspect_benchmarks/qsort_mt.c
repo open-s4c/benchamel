@@ -472,7 +472,7 @@ again:
 	verify(pthread_mutex_unlock(&qs->mtx_st));
 	if (qs->st == ts_term) {
 		DLOG("%10x n=%-10d Thread signalled to exit.\n", id, 0);
-		return;
+		return NULL;
 	}
 	assert(qs->st == ts_work);
 
@@ -495,7 +495,7 @@ again:
 		}
 		DLOG("%10x n=%-10d Shutdown signalling complete.\n", id, 0);
 		verify(pthread_mutex_unlock(&c->mtx_al));
-		return;
+		return NULL;
 	}
 	verify(pthread_mutex_unlock(&c->mtx_al));
 	goto again;
