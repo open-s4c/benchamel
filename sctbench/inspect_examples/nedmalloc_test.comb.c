@@ -5,6 +5,8 @@ An example of how to use nedalloc
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/mman.h>
 
 
 #ifndef NEDMALLOC_H

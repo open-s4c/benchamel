@@ -112,6 +112,8 @@
 - sctbench/inspect_examples/ctrace.foobar.comb.c: declare `trc_start_client()`
 - sctbench/inspect_examples/ctrace.foobar.comb.c: declare `trc_stop_client()`
 - sctbench/inspect_examples/ctrace.foobar.comb.c: add a `void*` parameter to `trc_start_server()`
+- sctbench/inspect_examples/nedmalloc_test.comb.c: include `time.h`
+- sctbench/inspect_examples/nedmalloc_test.comb.c: include `sys/mman.h`
 
 ## Added
 - build action for macOS
