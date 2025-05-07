@@ -500,7 +500,7 @@ static uint_t _unitmax = 0;		/* size of trace unit array */
 
 /* functions requiring forward delcarations */
 int trc_file(cchar_t *file);	
-void *trc_start_server(void*);
+void *trc_start_server(void* arg);
 int trc_stop_server();
 int trc_stop_client();
 int trc_start_client();
@@ -1287,7 +1287,7 @@ int trc_stop_client()
    void			// procedure 
    trc_start_server()	// procedure name
    --------------------------------------------------------------------*/
-void *trc_start_server(void*)
+void *trc_start_server(void* arg)
 {
 	char buf[TRACELEN];
 	int sockfd, client_sockfd;
