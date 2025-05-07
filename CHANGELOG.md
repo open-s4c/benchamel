@@ -94,8 +94,8 @@
 - sctbench/inspect_examples/Dining4.c: exclude `malloc.h`
 - sctbench/inspect_examples/Dining5.c: exclude `malloc.h`
 - sctbench/inspect_examples/bbuf.c: correct type for `argv`
-- sctbench/inspect_examples/boundedBuffer.c: correct type for `argv`
 - sctbench/inspect_examples/bbuf.c: exclude `malloc.h`
+- sctbench/inspect_examples/boundedBuffer.c: correct type for `argv`
 - sctbench/inspect_examples/ctrace-test.c: include `unistd.h`
 - sctbench/inspect_examples/ctrace-test.c: include `string.h`
 - sctbench/inspect_examples/ctrace-test.c: include `stdlib.h`
