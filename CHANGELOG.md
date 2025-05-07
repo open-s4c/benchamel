@@ -105,6 +105,7 @@
 - sctbench/inspect_examples/philosopher.c: correct type for `argv`
 - sctbench/inspect_examples/boundedBuffer.c: exclude `malloc.h`
 - sctbench/inspect_examples/thread-pool.example.c: return `NULL` in `tp_work_thread()`
+- sctbench/inspect_examples/ctrace-test.c: add a `void*` parameter to `trc_start_server()`
 
 ## Added
 - build action for macOS
