@@ -108,7 +108,9 @@
 - sctbench/inspect_examples/ctrace-test.c: add a `void*` parameter to `trc_start_server()`
 - sctbench/inspect_examples/ctrace.foobar.comb.c: include `unistd.h`
 - sctbench/inspect_examples/ctrace.foobar.comb.c: include `stdlib.h`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: include `string.h`
 - sctbench/inspect_examples/ctrace.foobar.comb.c: declare `trc_start_client()`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: declare `trc_stop_client()`
 - sctbench/inspect_examples/ctrace.foobar.comb.c: add a `void*` parameter to `trc_start_server()`
 
 ## Added

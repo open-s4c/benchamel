@@ -13,6 +13,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define _STDOUT		stdout
 #define _STDERR		stderr
@@ -502,6 +503,7 @@ int trc_file(cchar_t *file);
 void *trc_start_server(void*);
 int trc_stop_server();
 int trc_start_client();
+int trc_stop_client();
 
 /* ----------------------------------------------------------------------
    int			// 0=success, 1=failure
@@ -1145,7 +1147,7 @@ char *trc_varargs(const char *fmt, ...)
 			va_end(args);
 		}
 		else
-			t->fmt[0] = NULL;
+			t->fmt[0] = '\0';
 	}
 	HASH_READ_EXIT();
 
