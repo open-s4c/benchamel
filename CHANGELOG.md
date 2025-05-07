@@ -88,12 +88,48 @@
 - sctbench/inspect_benchmarks/qsort_mt.c: include `err.h`
 - sctbench/inspect_benchmarks/qsort.comb.c: add support for macOS and NetBSD
 - sctbench/inspect_benchmarks/qsort.comb.c: fix `printf` format string
+- sctbench/inspect_examples/nedmalloc_test.comb.c: replace `pthread_mutexattr_setkind_np()` with `pthread_mutexattr_settype()`
+- sctbench/inspect_examples/Dining2.c: exclude `malloc.h`
+- sctbench/inspect_examples/Dining3.c: exclude `malloc.h`
+- sctbench/inspect_examples/Dining4.c: exclude `malloc.h`
+- sctbench/inspect_examples/Dining5.c: exclude `malloc.h`
+- sctbench/inspect_examples/bbuf.c: correct type for `argv`
+- sctbench/inspect_examples/bbuf.c: exclude `malloc.h`
+- sctbench/inspect_examples/boundedBuffer.c: correct type for `argv`
+- sctbench/inspect_examples/ctrace-test.c: include `unistd.h`
+- sctbench/inspect_examples/ctrace-test.c: include `string.h`
+- sctbench/inspect_examples/ctrace-test.c: include `stdlib.h`
+- sctbench/inspect_examples/ctrace-test.c: correct assignment to `t->fmt[0]`
+- sctbench/inspect_examples/ctrace-test.c: declare `trc_stop_client()`
+- sctbench/inspect_examples/ctrace-test.c: declare `trc_start_client()`
+- sctbench/inspect_examples/philosopher.c: correct type for `argv`
+- sctbench/inspect_examples/boundedBuffer.c: exclude `malloc.h`
+- sctbench/inspect_examples/thread-pool.example.c: return `NULL` in `tp_work_thread()`
+- sctbench/inspect_examples/ctrace-test.c: add a `void*` parameter to `trc_start_server()`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: include `unistd.h`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: include `stdlib.h`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: include `string.h`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: declare `trc_start_client()`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: declare `trc_stop_client()`
+- sctbench/inspect_examples/ctrace.foobar.comb.c: add a `void*` parameter to `trc_start_server()`
+- sctbench/inspect_examples/nedmalloc_test.comb.c: include `sys/time.h`
+- sctbench/inspect_examples/nedmalloc_test.comb.c: include `sys/mman.h`
+- sctbench/inspect_examples/nedmalloc_test.comb.c: include `unistd.h`
+- sctbench/inspect_examples/pfscan.comb.c: correct return type in `pqueue_init()`
+- sctbench/inspect_examples/sync01.c: include `stdio.h`
+- sctbench/inspect_examples/sync02.c: include `stdio.h`
+- sctbench/inspect_examples/thread-pool.example.c: fix `printf` format strings
+- sctbench/inspect_examples/thread-pool.example.c: include `string.h`
+- sctbench/inspect_examples/thread-pool.example.c: include `unistd.h`
+- sctbench/inspect_examples/thread-pool.example.c: correct type of `tmpid`
+- sctbench/inspect_examples/thread-pool.example.c: correct `tp_get_thread_by_id()` signature
 
 ## Added
 - build action for macOS
 - sctbench/conc-bugs
 - sctbench/concurrent-software-benchmarks
 - sctbench/inspect_benchmarks
+- sctbench/inspect_examples
 
 # [0.1] - 2025-03-07
 
