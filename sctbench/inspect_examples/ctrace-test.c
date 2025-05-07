@@ -11,6 +11,8 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <time.h>
+#include <unistd.h>
+#include <string.h>
 
 #define _STDOUT		stdout
 #define _STDERR		stderr
@@ -499,6 +501,8 @@ static uint_t _unitmax = 0;		/* size of trace unit array */
 int trc_file(cchar_t *file);	
 void *trc_start_server(void);
 int trc_stop_server();
+int trc_stop_client();
+int trc_start_client();
 
 /* ----------------------------------------------------------------------
    int			// 0=success, 1=failure
@@ -1142,7 +1146,7 @@ char *trc_varargs(const char *fmt, ...)
 			va_end(args);
 		}
 		else
-			t->fmt[0] = NULL;
+			t->fmt[0] = '\0';
 	}
 	HASH_READ_EXIT();
 
