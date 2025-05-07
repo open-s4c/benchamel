@@ -55,7 +55,7 @@ struct tp_thread_pool_s{
 	TPBOOL (*init)(tp_thread_pool *this);
 	void (*close)(tp_thread_pool *this);
 	void (*process_job)(tp_thread_pool *this, tp_work *worker, tp_work_desc *job);
-	int  (*get_thread_by_id)(tp_thread_pool *this, int id);
+	int  (*get_thread_by_id)(tp_thread_pool *this, pthread_t id);
 	TPBOOL (*add_thread)(tp_thread_pool *this);
 	TPBOOL (*delete_thread)(tp_thread_pool *this);
 	int (*get_tp_status)(tp_thread_pool *this);
@@ -143,7 +143,7 @@ TPBOOL tp_init(tp_thread_pool *this){
 			printf("tp_init: creat work thread failed\n");
 			return FALSE;
 		}
-		printf("tp_init: creat work thread %d\n", this->thread_info[i].thread_id);
+		printf("tp_init: creat work thread %p\n", (void*)this->thread_info[i].thread_id);
 	}
 
 	//creat manage thread
@@ -152,7 +152,7 @@ TPBOOL tp_init(tp_thread_pool *this){
 		printf("tp_init: creat manage thread failed\n");
 		return FALSE;
 	}
-	printf("tp_init: creat manage thread %d\n", this->manage_thread_id);
+	printf("tp_init: creat manage thread %p\n", (void*)this->manage_thread_id);
 
 	return TRUE;
 }
@@ -177,7 +177,7 @@ void tp_close(tp_thread_pool *this){
 		pthread_join(this->thread_info[i].thread_id, NULL);
 		pthread_mutex_destroy(&this->thread_info[i].thread_lock);
 		pthread_cond_destroy(&this->thread_info[i].thread_cond);
-		printf("tp_close: kill work thread %d\n", this->thread_info[i].thread_id);
+		printf("tp_close: kill work thread %p\n", (void*)this->thread_info[i].thread_id);
 	}
 
 	//close manage thread
@@ -186,7 +186,7 @@ void tp_close(tp_thread_pool *this){
 	pthread_join(this->manage_thread_id, NULL);
 	
 	pthread_mutex_destroy(&this->tp_lock);
-	printf("tp_close: kill manage thread %d\n", this->manage_thread_id);
+	printf("tp_close: kill manage thread %p\n", (void*)this->manage_thread_id);
 	
 	//free thread struct
 	free(this->thread_info);
@@ -209,7 +209,7 @@ void tp_process_job(tp_thread_pool *this, tp_work *worker, tp_work_desc *job){
 	for(i=0;i<this->cur_th_num;i++){
 		pthread_mutex_lock(&this->thread_info[i].thread_lock);
 		if(!this->thread_info[i].is_busy){
-			printf("tp_process_job: %d thread idle, thread id is %d\n", i, this->thread_info[i].thread_id);
+			printf("tp_process_job: %p thread idle, thread id is %p\n", (void*)i, (void*)this->thread_info[i].thread_id);
 			//thread state be set busy before work
 		  	this->thread_info[i].is_busy = TRUE;
 			pthread_mutex_unlock(&this->thread_info[i].thread_lock);
@@ -217,7 +217,7 @@ void tp_process_job(tp_thread_pool *this, tp_work *worker, tp_work_desc *job){
 			this->thread_info[i].th_work = worker;
 			this->thread_info[i].th_job = job;
 			
-			printf("tp_process_job: informing idle working thread %d, thread id is %d\n", i, this->thread_info[i].thread_id);
+			printf("tp_process_job: informing idle working thread %p, thread id is %p\n", (void*)i, (void*)this->thread_info[i].thread_id);
 			pthread_cond_signal(&this->thread_info[i].thread_cond);
 
 			return;
@@ -237,7 +237,7 @@ void tp_process_job(tp_thread_pool *this, tp_work *worker, tp_work_desc *job){
 	pthread_mutex_unlock(&this->tp_lock);
 	
 	//send cond to work thread
-	printf("tp_process_job: informing idle working thread %d, thread id is %d\n", i, this->thread_info[i].thread_id);
+	printf("tp_process_job: informing idle working thread %p, thread id is %p\n", (void*)i, (void*)this->thread_info[i].thread_id);
 	pthread_cond_signal(&this->thread_info[i].thread_cond);
 	return;	
 }
@@ -293,7 +293,7 @@ static TPBOOL tp_add_thread(tp_thread_pool *this){
 		free(new_thread);
 		return FALSE;
 	}
-	printf("tp_add_thread: creat work thread %d\n", this->thread_info[this->cur_th_num-1].thread_id);
+	printf("tp_add_thread: creat work thread %p\n", (void*)this->thread_info[this->cur_th_num-1].thread_id);
 	
 	return TRUE;
 }
@@ -373,7 +373,7 @@ static void *tp_work_thread(void *pthread){
 	nseq = this->get_thread_by_id(this, curid);
 	if(nseq < 0)
 		return NULL;
-	printf("entering working thread %d, thread id is %d\n", nseq, curid);
+	printf("entering working thread %p, thread id is %p\n", (void*)nseq, (void*)curid);
 
 	//wait cond for processing real job.
 	while( TRUE ){
@@ -386,7 +386,7 @@ static void *tp_work_thread(void *pthread){
 		}
 		pthread_mutex_unlock(&this->thread_info[nseq].thread_lock);		
 		
-		printf("%lu thread do work!\n", pthread_self());
+		printf("%p thread do work!\n", (void*)pthread_self());
 
 		tp_work *work = this->thread_info[nseq].th_work;
 		tp_work_desc *job = this->thread_info[nseq].th_job;
@@ -399,7 +399,7 @@ static void *tp_work_thread(void *pthread){
 		this->thread_info[nseq].is_busy = FALSE;
 		pthread_mutex_unlock(&this->thread_info[nseq].thread_lock);
 		
-		printf("%lu do work over\n", pthread_self());
+		printf("%p do work over\n", (void*)pthread_self());
 	}
 	return NULL;
 }
