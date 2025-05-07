@@ -118,6 +118,11 @@
 - sctbench/inspect_examples/pfscan.comb.c: correct return type in `pqueue_init()`
 - sctbench/inspect_examples/sync01.c: include `stdio.h`
 - sctbench/inspect_examples/sync02.c: include `stdio.h`
+- sctbench/inspect_examples/thread-pool.example.c: fix `printf` format string
+- sctbench/inspect_examples/thread-pool.example.c: include `string.h`
+- sctbench/inspect_examples/thread-pool.example.c: include `unistd.h`
+- sctbench/inspect_examples/thread-pool.example.c: correct type of `tmpid`
+- sctbench/inspect_examples/thread-pool.example.c: correct `tp_get_thread_by_id()` signature
 
 ## Added
 - build action for macOS

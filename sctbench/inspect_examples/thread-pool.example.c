@@ -3,6 +3,8 @@
 #include <sys/types.h>
 #include <pthread.h>
 #include <signal.h>
+#include <unistd.h>
+#include <string.h>
 
 #ifndef TPBOOL
 typedef int TPBOOL;
@@ -201,7 +203,7 @@ void tp_close(tp_thread_pool *this){
   */
 void tp_process_job(tp_thread_pool *this, tp_work *worker, tp_work_desc *job){
 	int i;
-	int tmpid;
+	pthread_t tmpid;
 
 	//fill this->thread_info's relative work key
 	for(i=0;i<this->cur_th_num;i++){
@@ -248,7 +250,7 @@ void tp_process_job(tp_thread_pool *this, tp_work *worker, tp_work_desc *job){
   * return:
   * 	seq num in thread info struct array
   */
-int tp_get_thread_by_id(tp_thread_pool *this, int id){
+int tp_get_thread_by_id(tp_thread_pool *this, pthread_t id){
 	int i;
 
 	for(i=0;i<this->cur_th_num;i++){
@@ -384,7 +386,7 @@ static void *tp_work_thread(void *pthread){
 		}
 		pthread_mutex_unlock(&this->thread_info[nseq].thread_lock);		
 		
-		printf("%d thread do work!\n", pthread_self());
+		printf("%lu thread do work!\n", pthread_self());
 
 		tp_work *work = this->thread_info[nseq].th_work;
 		tp_work_desc *job = this->thread_info[nseq].th_job;
@@ -397,7 +399,7 @@ static void *tp_work_thread(void *pthread){
 		this->thread_info[nseq].is_busy = FALSE;
 		pthread_mutex_unlock(&this->thread_info[nseq].thread_lock);
 		
-		printf("%d do work over\n", pthread_self());
+		printf("%lu do work over\n", pthread_self());
 	}
 	return NULL;
 }
