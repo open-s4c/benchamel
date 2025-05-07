@@ -11,6 +11,8 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <time.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 #define _STDOUT		stdout
 #define _STDERR		stderr
@@ -497,8 +499,9 @@ static uint_t _unitmax = 0;		/* size of trace unit array */
 
 /* functions requiring forward delcarations */
 int trc_file(cchar_t *file);	
-void *trc_start_server(void);
+void *trc_start_server(void*);
 int trc_stop_server();
+int trc_start_client();
 
 /* ----------------------------------------------------------------------
    int			// 0=success, 1=failure
@@ -1282,7 +1285,7 @@ int trc_stop_client()
    void			// procedure 
    trc_start_server()	// procedure name
    --------------------------------------------------------------------*/
-void *trc_start_server(void)
+void *trc_start_server(void*)
 {
 	char buf[TRACELEN];
 	int sockfd, client_sockfd;
