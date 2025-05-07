@@ -99,7 +99,7 @@ char version[] = "1.0";
 int pqueue_init(PQUEUE *qp, int qsize)
 {
   qp->buf = calloc(sizeof(void *), qsize);
-  if (qp->buf == NULL) return NULL;
+  if (qp->buf == NULL) return 0;
   
   qp->qsize = qsize;
   qp->occupied = 0;

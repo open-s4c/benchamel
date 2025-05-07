@@ -6,6 +6,7 @@ An example of how to use nedalloc
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#define _GNU_SOURCE 
 #include <sys/mman.h>
 
 
