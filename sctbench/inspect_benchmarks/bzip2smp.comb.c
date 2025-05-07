@@ -6053,9 +6053,10 @@ int main(int argc, char *argv[])
   bz_stream_state_bs savedState;
   int wasStateSaved = 0;
 
+  char *default_argv[] = {argv[0], "--no-ht", "-1", "-p2", "bzip_input", "output.txt", NULL};
   if (argc == 1)
   {
-    argv = (char *[]){argv[0], "--no-ht", "-1", "-p2", "bzip_input", "output.txt", NULL};
+    argv = default_argv;
     argc = 6;
   }
 

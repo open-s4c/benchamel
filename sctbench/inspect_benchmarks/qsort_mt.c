@@ -559,8 +559,9 @@ main(int argc, char *argv[])
 	struct timeval start, end;
 	struct rusage ru;
 
+	char *default_argv[] = {argv[0], "-n", "32", "-f", "4", "-h", "2", "-v", NULL};
     if (argc == 1) {
-        argv = (char *[]){argv[0], "-n", "32", "-f", "4", "-h", "2", "-v", NULL};
+        argv = default_argv;
         argc = 8;
     }
 

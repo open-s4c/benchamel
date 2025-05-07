@@ -88,12 +88,14 @@
 - sctbench/inspect_benchmarks/qsort_mt.c: include `err.h`
 - sctbench/inspect_benchmarks/qsort.comb.c: add support for macOS and NetBSD
 - sctbench/inspect_benchmarks/qsort.comb.c: fix `printf` format string
+- sctbench/inspect_examples/nedmalloc_test.comb.c: replace `pthread_mutexattr_setkind_np()` with `pthread_mutexattr_settype()`
 
 ## Added
 - build action for macOS
 - sctbench/conc-bugs
 - sctbench/concurrent-software-benchmarks
 - sctbench/inspect_benchmarks
+- sctbench/inspect_examples
 
 # [0.1] - 2025-03-07
 
