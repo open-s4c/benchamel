@@ -83,6 +83,7 @@
 - sctbench/concurrent-software-benchmarks/token_ring_bad.c: add `pthread_join()`
 - sctbench/inspect_benchmarks/bzip2smp.comb.c: correct stdin and stdout redirection
 - sctbench/inspect_benchmarks/bzip2smp.comb.c: fix `printf` format string
+- sctbench/inspect_benchmarks/bzip2smp.comb.c: exclude `alloca.h`
 - sctbench/inspect_benchmarks/qsort_mt.c: thread routines return 0
 - sctbench/inspect_benchmarks/qsort_mt.c: include `err.h`
 - sctbench/inspect_benchmarks/qsort.comb.c: add support for macOS
