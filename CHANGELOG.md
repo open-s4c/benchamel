@@ -86,7 +86,7 @@
 - sctbench/inspect_benchmarks/bzip2smp.comb.c: exclude `alloca.h`
 - sctbench/inspect_benchmarks/qsort_mt.c: thread routines return 0
 - sctbench/inspect_benchmarks/qsort_mt.c: include `err.h`
-- sctbench/inspect_benchmarks/qsort.comb.c: add support for macOS
+- sctbench/inspect_benchmarks/qsort.comb.c: add support for macOS and NetBSD
 - sctbench/inspect_benchmarks/qsort.comb.c: fix `printf` format string
 
 ## Added

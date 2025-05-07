@@ -507,7 +507,7 @@ int pthread_version(char * buf, const size_t len)
     return 0;
 }
 
-#elif defined(__linux) || defined(__APPLE__)
+#elif defined(__linux) || defined(__APPLE__) || defined(__NetBSD__)
 
 int pthread_get_nproc(int * number)
 {
