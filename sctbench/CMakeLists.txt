@@ -43,3 +43,13 @@ foreach(SRC ${SRCS})
 	add_executable(${TARGET} ${SRC})
 	target_link_libraries(${TARGET} pthread)
 endforeach()
+
+# inspect_benchmarks
+file(GLOB SRCS inspect_benchmarks/*.c)
+foreach(SRC ${SRCS})
+    get_filename_component(NAME ${SRC} NAME_WLE)
+	set(TARGET ${NAME})
+	add_executable(${TARGET} ${SRC})
+	target_link_libraries(${TARGET} pthread)
+endforeach()
+configure_file(inspect_benchmarks/bzip_input bzip_input COPYONLY)
