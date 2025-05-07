@@ -5791,7 +5791,7 @@ static char programName[] = "bzip2smp: ";
 
 void note( int level, const char * format, ... )
 {
-  fprintf(stderr, "%x: ", pthread_self());
+  fprintf(stderr, "%p: ", (void*)pthread_self());
 
   if ( verbosityLevel >= level )
   {
@@ -6067,7 +6067,7 @@ int main(int argc, char *argv[])
     if (argv[x][0] != '-') break;
 
     if ( !strcmp( argv[ x ], "--help" ) ){
-      fprintf( stderr, helpText );
+      fprintf( stderr, "%s", helpText );
       return 1;
     }
 

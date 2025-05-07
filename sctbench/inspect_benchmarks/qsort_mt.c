@@ -49,6 +49,7 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <errno.h>
+#include <err.h>
 #include <stdio.h>
 #ifdef __FreeBSD__
 #include <pmc.h>

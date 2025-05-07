@@ -43,6 +43,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 
 /**
@@ -528,7 +529,7 @@ int pthread_get_nproc(int * number)
 int pthread_get_name(const pthread_t tid, char * buf, const size_t len)
 {
     /* convert to a string */
-    (void)snprintf(buf, len, "%d", (int)tid);
+    (void)snprintf(buf, len, "%" PRIu64, (uint64_t )tid);
 
     return 0;
 }
