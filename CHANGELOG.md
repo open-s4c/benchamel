@@ -84,6 +84,9 @@
 
 ## Added
 - build action for macOS
+- sctbench/conc-bugs
+- sctbench/concurrent-software-benchmarks
+- sctbench/inspect_benchmarks
 
 # [0.1] - 2025-03-07
 
