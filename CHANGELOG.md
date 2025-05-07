@@ -101,6 +101,8 @@
 - sctbench/inspect_examples/ctrace-test.c: correct assignment to `t->fmt[0]`
 - sctbench/inspect_examples/ctrace-test.c: declare `trc_stop_client()`
 - sctbench/inspect_examples/ctrace-test.c: declare `trc_start_client()`
+- sctbench/inspect_examples/philosopher.c: correct type for `argv`
+- sctbench/inspect_examples/boundedBuffer.c: exclude `malloc.h`
 
 ## Added
 - build action for macOS

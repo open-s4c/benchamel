@@ -210,7 +210,7 @@ void * philosopher_thread(void *arg)
 }
 
 
-int main(int argc, char * argv)
+int main(int argc, char ** argv)
 {
   fork_t          forks[PHILOSOPHERS_SUM];
   philosopher_t   philosophers[PHILOSOPHERS_SUM];
