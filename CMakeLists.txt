@@ -5,7 +5,7 @@ project(
     LANGUAGES C CXX
     VERSION 0.1)
 
-message(INFO "Building on ${CMAKE_SYSTEM_NAME}")
+message("Building on ${CMAKE_SYSTEM_NAME}")
 
 option(BENCHAMEL_BUILD_TSAN "Enable ThreadSanitizer" OFF)
 
