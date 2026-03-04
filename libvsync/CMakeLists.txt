@@ -1,3 +1,8 @@
+if (${BENCHAMEL_BUILD_TSAN})
+    add_compile_options(-fsanitize=thread -g -fno-omit-frame-pointer -DVSYNC_SC)
+    link_libraries(-fsanitize=thread)
+endif()
+
 file(GLOB SRCS test/queue/*.c test/spinlock/*.c)
 
 foreach(SRC ${SRCS})
