@@ -1314,7 +1314,7 @@ void *trc_start_server(void* arg)
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	serv_addr.sin_port = htons(TRC_PORT);
 
-	if(bind(sockfd, &serv_addr, sizeof(serv_addr)) < 0){
+	if(bind(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0){
 		perror(NULL);
 		return NULL;
 	}
@@ -1326,7 +1326,7 @@ void *trc_start_server(void* arg)
 	sem_post(&_startclient);
 	
 	len = sizeof(client_addr);
-	client_sockfd = accept(sockfd, &client_addr, &len);
+	client_sockfd = accept(sockfd, (struct sockaddr *)&client_addr, &len);
 
 	while((_server && (client_sockfd != -1))|| _msgs){
 		nread = 0;

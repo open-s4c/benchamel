@@ -5883,8 +5883,9 @@ void * allocMem( size_t size )
 }
 
 /* The compressing threads' function */
-void * threadFunction()
+void * threadFunction(void *arg)
 {
+  (void)arg;
   int outChunk;
   bz_stream * strm;
 
@@ -5952,8 +5953,9 @@ void * threadFunction()
 }
 
 /* This thread is only writing the results to stdout */
-void * writerThread()
+void * writerThread(void *arg)
 {
+  (void)arg;
   void * buf = allocMem( blockSize100k * 101000 + 600 );
   size_t blockSize;
   bz_stream * strm;
