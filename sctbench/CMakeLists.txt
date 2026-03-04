@@ -1,3 +1,8 @@
+if (${BENCHAMEL_BUILD_TSAN})
+    add_compile_options(-fsanitize=thread -g -fno-omit-frame-pointer)
+    link_libraries(-fsanitize=thread)
+endif()
+
 # chess
 
 file(GLOB SRCS chess/*.cpp)
