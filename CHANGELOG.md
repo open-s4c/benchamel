@@ -1,3 +1,8 @@
+# [unreleased]
+
+## Added
+- `buf_ring` bug from FreeBSD 8.0 onwards
+
 # [0.2] - 2026-03-26
 
 ## Fixed
