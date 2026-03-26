@@ -1,0 +1,90 @@
+cmake_minimum_required(VERSION 3.16)
+project(benchamelo LANGUAGES C CXX)
+include(FetchContent)
+include(ExternalProject)
+# add_subdirectory(memcached-127)
+
+set(LIBEVENT_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/libevent-src)
+set(LIBEVENT_DIR ${CMAKE_CURRENT_BINARY_DIR}/libevent)
+set(MEMCACHED_SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/memcached-src)
+
+ExternalProject_Add(
+  libevent
+  URL https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+  URL_HASH
+    SHA256=92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
+  DOWNLOAD_EXTRACT_TIMESTAMP YES
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${LIBEVENT_DIR} #
+  BUILD_COMMAND ${MAKE_EXE} libevent)
+# FetchContent_MakeAvailable(libevent)
+
+# FetchContent_Populate( libevent URL
+# https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+# URL_HASH
+# SHA256=92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
+# DOWNLOAD_EXTRACT_TIMESTAMP YES) SOURCE_DIR ${LIBEVENT_SOURCE_DIR})
+#
+# configure_file(${LIBEVENT_SOURCE_DIR}/evconfig-private.h.cmake
+# ${LIBEVENT_SOURCE_DIR}/evconfig-private.h)
+
+# add_library( libevent STATIC ${LIBEVENT_SOURCE_DIR}/buffer.c
+# ${LIBEVENT_SOURCE_DIR}/bufferevent.c
+# ${LIBEVENT_SOURCE_DIR}/bufferevent_filter.c
+# ${LIBEVENT_SOURCE_DIR}/bufferevent_openssl.c
+# ${LIBEVENT_SOURCE_DIR}/bufferevent_pair.c
+# ${LIBEVENT_SOURCE_DIR}/bufferevent_ratelim.c
+# ${LIBEVENT_SOURCE_DIR}/bufferevent_sock.c ${LIBEVENT_SOURCE_DIR}/devpoll.c
+# ${LIBEVENT_SOURCE_DIR}/epoll.c ${LIBEVENT_SOURCE_DIR}/epoll_sub.c
+# ${LIBEVENT_SOURCE_DIR}/evdns.c ${LIBEVENT_SOURCE_DIR}/event.c
+# ${LIBEVENT_SOURCE_DIR}/event_tagging.c ${LIBEVENT_SOURCE_DIR}/evmap.c
+# ${LIBEVENT_SOURCE_DIR}/evport.c ${LIBEVENT_SOURCE_DIR}/evrpc.c
+# ${LIBEVENT_SOURCE_DIR}/evthread.c ${LIBEVENT_SOURCE_DIR}/evthread_pthread.c
+# ${LIBEVENT_SOURCE_DIR}/evutil.c ${LIBEVENT_SOURCE_DIR}/evutil_rand.c
+# ${LIBEVENT_SOURCE_DIR}/evutil_time.c ${LIBEVENT_SOURCE_DIR}/http.c
+# ${LIBEVENT_SOURCE_DIR}/kqueue.c ${LIBEVENT_SOURCE_DIR}/listener.c
+# ${LIBEVENT_SOURCE_DIR}/log.c ${LIBEVENT_SOURCE_DIR}/poll.c
+# ${LIBEVENT_SOURCE_DIR}/select.c ${LIBEVENT_SOURCE_DIR}/signal.c
+# ${LIBEVENT_SOURCE_DIR}/strlcpy.c ${LIBEVENT_SOURCE_DIR}/win32select.c)
+# target_include_directories(libevent PRIVATE ${LIBEVENT_SOURCE_DIR}/include)
+# target_compile_definitions(libevent PRIVATE -DIOV_MAX=1024)
+
+FetchContent_Populate(
+  memcached
+  URL https://github.com/memcached/memcached/archive/refs/tags/1.4.4.tar.gz
+  URL_HASH
+    SHA256=f695c7127364481e63636653f5f07b3b1a75d4c956c99a20e19053353dee3164
+  DOWNLOAD_EXTRACT_TIMESTAMP YES)
+# SOURCE_DIR ${MEMCACHED_SOURCER_DIR}
+
+add_executable(
+  memcached-127
+  ${MEMCACHED_SOURCE_DIR}/assoc.c
+  ${MEMCACHED_SOURCE_DIR}/cache.c
+  # ${MEMCACHED_SOURCE_DIR}/client.c
+  ${MEMCACHED_SOURCE_DIR}/daemon.c
+  ${MEMCACHED_SOURCE_DIR}/hash.c
+  ${MEMCACHED_SOURCE_DIR}/items.c
+  ${MEMCACHED_SOURCE_DIR}/memcached.c
+  ${MEMCACHED_SOURCE_DIR}/slabs.c
+  ${MEMCACHED_SOURCE_DIR}/stats.c
+  ${MEMCACHED_SOURCE_DIR}/thread.c
+  ${MEMCACHED_SOURCE_DIR}/util.c
+  # sizes.c
+  # testapp.c
+  # timedrun.c
+  # sasl_defs.c
+  # solaris_priv.c
+)
+target_include_directories(
+  memcached-127 PRIVATE ${MEMCACHED_SOURCE_DIR}
+                        ${CMAKE_CURRENT_BINARY_DIR}/_deps/libevent-src/include)
+target_link_libraries(memcached-127 libevent::libevent pthread m)
+target_compile_definitions(
+  memcached-127
+  PRIVATE -DPACKAGE=\"memcached\"
+          -DVERSION=\"1.4.4\"
+          -D_GNU_SOURCE
+          -Wno-deprecated-declarations
+          -DIOV_MAX=1024
+          -DHAVE_SIGIGNORE
+          -DENDIAN_LITTLE=1)
