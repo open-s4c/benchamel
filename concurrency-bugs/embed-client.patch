@@ -1,0 +1,45 @@
+diff --git a/memcached.h b/memcached.h
+index cfa59f0..6829e15 100644
+--- a/memcached.h
++++ b/memcached.h
+@@ -14,6 +14,7 @@
+ #include <netinet/in.h>
+ #include <event.h>
+ #include <netdb.h>
++#include <stdbool.h>
+ #include <pthread.h>
+ #include <unistd.h>
+ 
+diff --git a/memcached.c b/memcached.c
+index 537fc86..370a5c2 100644
+--- a/memcached.c
++++ b/memcached.c
+@@ -14,6 +14,9 @@
+  *      Brad Fitzpatrick <brad@danga.com>
+  */
+ #include "memcached.h"
++/* NOTE(benchamel) */
++#include "client.h"
++
+ #include <sys/stat.h>
+ #include <sys/socket.h>
+ #include <sys/un.h>
+@@ -109,7 +112,7 @@ time_t process_started;     /* when the process was started */
+ 
+ /** file scope variables **/
+ static conn *listen_conn = NULL;
+-static struct event_base *main_base;
++struct event_base *main_base;
+ 
+ enum transmit_result {
+     TRANSMIT_COMPLETE,   /** All done writing. */
+@@ -4676,6 +4679,9 @@ int main (int argc, char **argv) {
+     /* Drop privileges no longer needed */
+     drop_privileges();
+ 
++    /* NOTE(benchamel): run client threads */
++    client_run();
++
+     /* enter the event loop */
+     event_base_loop(main_base, 0);
+ 

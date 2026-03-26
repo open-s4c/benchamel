@@ -9,6 +9,7 @@ add_subdirectory(convul)
 add_subdirectory(libvsync)
 add_subdirectory(sctbench)
 add_subdirectory(buf_ring)
+add_subdirectory(concurrency-bugs)
 
 # ------------------------------------------------------------------------------
 # generate bugs.lst file with the list of all executables that are buggy
