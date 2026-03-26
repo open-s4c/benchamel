@@ -8,6 +8,7 @@ option(BENCHAMEL_BUILD_TSAN "Enable ThreadSanitizer" OFF)
 add_subdirectory(convul)
 add_subdirectory(libvsync)
 add_subdirectory(sctbench)
+add_subdirectory(buf_ring)
 
 # ------------------------------------------------------------------------------
 # generate bugs.lst file with the list of all executables that are buggy
