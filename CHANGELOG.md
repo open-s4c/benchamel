@@ -1,4 +1,4 @@
-# [unreleased]
+# [0.2] - 2026-03-26
 
 ## Fixed
 - ConVul/2011-2183: thread routines return 0
