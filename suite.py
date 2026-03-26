@@ -15,7 +15,7 @@ NB_RUNS = 1
 TESTS = [
     str(f) for f in chain.from_iterable(
         (get_curdir(__file__) / 'build' / d).rglob('*')
-        for d in ['ConVul', 'libvsync', 'sctbench'])
+        for d in ['convul', 'libvsync', 'sctbench'])
     if os.path.isfile(f) and os.access(f, os.X_OK) and not any(
         str(f).endswith(t)
         for t in ['2017-6346', '2015-7550', 'clhlock', 'bounded_spsc'])

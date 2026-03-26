@@ -5,7 +5,7 @@ message("Building on ${CMAKE_SYSTEM_NAME}")
 
 option(BENCHAMEL_BUILD_TSAN "Enable ThreadSanitizer" OFF)
 
-add_subdirectory(ConVul)
+add_subdirectory(convul)
 add_subdirectory(libvsync)
 add_subdirectory(sctbench)
 

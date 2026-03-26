@@ -131,6 +131,13 @@
 - sctbench/inspect_benchmarks
 - sctbench/inspect_examples
 
+## Changed
+
+- marked some test cases with `_ok` suffix to help distinguishing from from
+  failing ones
+- add the generation of a `bugs.list` with all programs that fail
+- renamed ConVul directory as convul to maintain naming consistency
+
 # [0.1] - 2025-03-07
 
 ## Added
