@@ -276,3 +276,35 @@ index fc88b30..4abdef2 100644
 -    hemlock_release(&lock, &nodes[tid]);
 +    hemlock_release(&lock2, &nodes[tid]);
  }
+diff --git a/include/vsync/map/skiplist_lf.h b/include/vsync/map/skiplist_lf.h
+index 284e39b..384a1eb 100644
+--- a/include/vsync/map/skiplist_lf.h
++++ b/include/vsync/map/skiplist_lf.h
+@@ -149,7 +149,11 @@ vskiplist_calc_node_sz(vskiplist_t *lst, vsize_t container_sz, vsize_t *height)
+ {
+     ASSERT(lst);
+     ASSERT(height);
++#ifdef BUGFIX
+     *height = _vskiplist_get_rand_height(&lst->seed);
++#else
++    *height = VSKIPLIST_MAX_HEIGHT - 1;
++#endif
+     ASSERT(*height < VSKIPLIST_MAX_HEIGHT);
+     return container_sz + (sizeof(vatomicptr_markable_t) * (*height));
+ }
+@@ -232,6 +236,7 @@ vskiplist_add(vskiplist_t *lst, vskiplist_key_t key, vskiplist_node_t *node,
+                 pred = preds[level];
+                 succ = succs[level];
+ 
++#ifdef BUGFIX
+                 do {
+                     /* we don't want to lose shortcuts in the skip-list, and
+                      * avoid a situation where n is connected to old succ and
+@@ -260,6 +265,7 @@ vskiplist_add(vskiplist_t *lst, vskiplist_key_t key, vskiplist_node_t *node,
+                     // we update the successor
+                 } while (!vatomicptr_markable_cmpxchg(
+                     &node->next[level], cur_succ, mark, succ, mark));
++#endif
+ 
+                 // we connect the node to this level
+                 if (vatomicptr_markable_cmpxchg(&pred->next[level], succ, false,
