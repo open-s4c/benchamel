@@ -4,7 +4,7 @@ if(${BENCHAMEL_BUILD_TSAN})
   link_libraries(-fsanitize=thread)
 endif()
 
-file(GLOB SRCS test/queue/*.c test/spinlock/*.c)
+file(GLOB SRCS test/queue/*.c test/spinlock/*.c test/skiplist/*.c)
 
 # OK_name are tests that are correct. They will be marked with an _ok suffix.
 # The OK tests are all tests/algorithms not present in the bugs.patch file.
@@ -23,7 +23,9 @@ set(OK_ttaslock true)
 set(OK_bounded_mpmc_check_full true)
 set(OK_bounded_mpmc_check_empty false)
 set(OK_bounded_spsc false)
+set(OK_skiplist false)
 
+set(CFLAGS_skiplist)
 set(CFLAGS_twalock -DTWA_A=16U)
 
 foreach(SRC ${SRCS})

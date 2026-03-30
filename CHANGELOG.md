@@ -2,6 +2,7 @@
 
 ## Added
 - `buf_ring` bug from FreeBSD 8.0 onwards
+- `skiplist` bug in libvsync
 
 # [0.2] - 2026-03-26
 
