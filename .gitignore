@@ -1,4 +1,7 @@
 build/
+build*/
+_distfiles/
+.distsrc/
 compile_flags.txt
 .kakrc
 .clangd
