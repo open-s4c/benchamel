@@ -1,0 +1,13 @@
+The `concurrency-bugs` directory does not vendor the original benchmark
+sources. The benchmark programs built from this directory are downloaded from
+their respective upstream archives at configure/build time.
+
+Accordingly:
+
+- the licenses of those downloaded upstream sources apply to the benchmark
+  source trees themselves;
+- this directory only contains local CMake glue, configuration templates, and
+  patch files used to build or adapt those external benchmarks within
+  Benchamel.
+
+Each downloaded benchmark keeps its own upstream licensing terms.
