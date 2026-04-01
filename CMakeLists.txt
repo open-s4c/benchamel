@@ -55,7 +55,10 @@ list(FILTER EXECUTABLES EXCLUDE REGEX "^.*_unsat$")
 # append binary path to each target
 set(EXECUTABLES_)
 foreach(exec IN LISTS EXECUTABLES)
-  set(EXECUTABLES_ ${EXECUTABLES_} "${exec}:$<TARGET_FILE:${exec}>")
+  set(EXECUTABLES_
+      ${EXECUTABLES_}
+      "$<TARGET_FILE_PREFIX:${exec}>$<TARGET_FILE_BASE_NAME:${exec}>:$<TARGET_FILE:${exec}>"
+  )
 endforeach()
 
 # dump list into a file
