@@ -84,6 +84,7 @@ set(memcached_sources
     ${MEMCACHED_SOURCE_DIR}/util.c)
 
 add_executable(memcached-127 ${memcached_sources})
+set_target_properties(memcached-127 PROPERTIES PREFIX "JCB.")
 add_dependencies(memcached-127 libevent)
 target_include_directories(
   memcached-127
