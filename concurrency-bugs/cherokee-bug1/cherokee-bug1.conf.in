@@ -1,0 +1,24 @@
+server!port = 50081
+server!timeout = 15
+server!keepalive = 0
+server!keepalive_max_requests = 1
+server!server_tokens = full
+server!panic_action = @CHEROKEE_BUG1_INSTALL_DIR@/bin/cherokee-panic
+server!pid_file = @CHEROKEE_BUG1_INSTALL_DIR@/var/run/cherokee.pid
+server!thread_number = 2
+server!fdlimit = 26
+
+vserver!1!nick = default
+vserver!1!document_root = @CHEROKEE_BUG1_INSTALL_DIR@/var/www
+vserver!1!directory_index = index.html
+
+vserver!1!logger = combined
+vserver!1!logger!access!type = file
+vserver!1!logger!access!filename = @CHEROKEE_BUG1_INSTALL_DIR@/var/log/cherokee.access
+vserver!1!logger!access!buffsize = 1024
+vserver!1!logger!error!type = file
+vserver!1!logger!error!filename = @CHEROKEE_BUG1_INSTALL_DIR@/var/log/cherokee.error
+
+vserver!1!rule!1!match = default
+vserver!1!rule!1!handler = common
+vserver!1!rule!1!handler!iocache = 0

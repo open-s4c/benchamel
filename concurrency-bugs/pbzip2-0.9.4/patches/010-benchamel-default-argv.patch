@@ -1,0 +1,18 @@
+diff --git a/pbzip2.cpp b/pbzip2.cpp
+index 9af1abd..a858c9c 100644
+--- a/pbzip2.cpp
++++ b/pbzip2.cpp
+@@ -1362,6 +1362,13 @@
+  */
+ int main(int argc, char* argv[])
+ {
++	if (argc == 1) {
++		/* Benchamel change: provide default arguments when launched without any. */
++		execl(argv[0], argv[0], "-k", "-f", "-p3",
++		      BENCHAMEL_PBZIP2_TEST_TAR, NULL);
++		printf("[benchamel] exec failed!\n");
++		return 1;
++	}
+ 	queue *fifo;
+ 	pthread_t con, output;
+ 	char **FileList = NULL;

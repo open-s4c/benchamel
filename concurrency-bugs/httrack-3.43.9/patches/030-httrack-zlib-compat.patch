@@ -1,0 +1,22 @@
+--- a/src/minizip/unzip.c
++++ b/src/minizip/unzip.c
+@@ -1170,7 +1170,7 @@
+     if (password != NULL)
+     {
+         int i;
+-        s->pcrc_32_tab = get_crc_table();
++        s->pcrc_32_tab = (const unsigned long*) get_crc_table();
+         init_keys(password,s->keys,s->pcrc_32_tab);
+         if (ZSEEK(s->z_filefunc, s->filestream,
+                   s->pfile_in_zip_read->pos_in_zipfile +
+--- a/src/minizip/zip.c
++++ b/src/minizip/zip.c
+@@ -852,7 +852,7 @@
+         unsigned char bufHead[RAND_HEAD_LEN];
+         unsigned int sizeHead;
+         zi->ci.encrypt = 1;
+-        zi->ci.pcrc_32_tab = get_crc_table();
++        zi->ci.pcrc_32_tab = (const unsigned long*) get_crc_table();
+         /*init_keys(password,zi->ci.keys,zi->ci.pcrc_32_tab);*/
+ 
+         sizeHead=crypthead(password,bufHead,RAND_HEAD_LEN,zi->ci.keys,zi->ci.pcrc_32_tab,crcForCrypting);

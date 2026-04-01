@@ -1,0 +1,26 @@
+# Benchamel patch: add a canonical argc==1 self-exec for the transmission-1.42
+# CLI benchmark. The benchmark uses create-torrent mode with local build-tree
+# assets so it can run without external inputs.
+--- a/cli/cli.c
++++ b/cli/cli.c
+@@ -313,6 +313,20 @@ main( int     argc,
+     printf( "Transmission %s - http://www.transmissionbt.com/\n",
+             LONG_VERSION_STRING );
+ 
++    if( argc == 1 )
++    {
++        execl( argv[0], argv[0],
++               "-M",
++               "-g", BENCHAMEL_TRANSMISSION_CONFIG_DIR,
++               "-w", BENCHAMEL_TRANSMISSION_DOWNLOAD_DIR,
++               "-a", "http://127.0.0.1:1/announce",
++               "-n", BENCHAMEL_TRANSMISSION_INPUT,
++               BENCHAMEL_TRANSMISSION_OUTPUT,
++               (char*) NULL );
++        perror( "execl" );
++        return EXIT_FAILURE;
++    }
++
+     /* user needs to pass in at least one argument */
+     if( argc < 2 ) {
+         tr_getopt_usage( MY_NAME, getUsage( ), options );

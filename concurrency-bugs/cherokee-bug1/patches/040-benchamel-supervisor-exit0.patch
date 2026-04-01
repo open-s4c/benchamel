@@ -1,0 +1,15 @@
+--- a/cherokee/main.c
++++ b/cherokee/main.c
+@@ -262,8 +262,10 @@
+ 	if (WIFEXITED(exitcode)) {
+ 		int re = WEXITSTATUS(exitcode);
+ 
+-		if (re == EXIT_OK_ONCE)
+-			exit (EXIT_OK_ONCE);
++		if (re == EXIT_OK_ONCE) {
++			/* Benchamel runs Cherokee as a one-shot benchmark. */
++			exit (0);
++		}
+ 
+ 		/* Child terminated normally */ 
+ 		PRINT_MSG ("Server PID=%d exited re=%d\n", pid, re);

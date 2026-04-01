@@ -1,0 +1,17 @@
+diff --git a/src/htsweb.c b/src/htsweb.c
+index eb89bd3..ec69083 100644
+--- a/src/htsweb.c
++++ b/src/htsweb.c
+@@ -97,6 +97,12 @@ static void htsweb_sig_brpipe( int code ) {
+ 
+ int main(int argc, char* argv[])
+ {
++  if (argc == 1) {
++    /* Benchamel change: run with a fixed build-time default document root. */
++    execl(argv[0], argv[0], BENCHAMEL_HTTRACK_ROOT "/", NULL);
++    printf("[benchamel] exec failed!\n");
++    return 1;
++  }
+   int i;
+   int ret = 0;
+   int defaultPort = 0;

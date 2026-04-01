@@ -1,0 +1,131 @@
+# Adapted from sctbench/conc-bugs/aget-bug2/Resume.c and Signal.c
+--- a/Resume.c
++++ b/Resume.c
+@@ -21,6 +21,8 @@
+ #include "Resume.h"
+ #include "Misc.h"
+ 
++#include <assert.h>
++
+ extern struct thread_data *wthread;
+ extern struct request *req;
+ extern int nthreads;
+@@ -35,6 +37,9 @@
+ 	time_t diff_sec;
+ 	struct passwd *pw;
+ 
++	long total_bwritten;
++	int i;
++
+ 	if(wthread == NULL)	// Do nothing
+ 		return;
+ 
+@@ -52,24 +57,11 @@
+ 	logfile = (char *)calloc(255, sizeof(char));
+ 
+ 	/* Try and save log file in user's home directory */
+-	pw = getpwuid(getuid());
+-	if(pw->pw_dir == NULL)
+ 		/* A small fix: save protocol in log filename.
+ 		 * This is necessary in case urls for ftp and http locations of
+ 		 * a file is the same -- rare, but happens to me all the time (localhost)
+ 		 */
+ 		snprintf(logfile, 255, "%s-aget%c.log", req[0].lfile, req->proto == PROTO_HTTP ? 'h' : 'f');
+-	else {
+-		s = &req->lfile[strlen(req->lfile)-1];
+-		while(*s!='/' && s!=req->lfile)
+-			s--;
+-		snprintf(logfile, 255, "%s%s-aget%c.log", pw->pw_dir, s, req->proto == PROTO_HTTP ? 'h' : 'f');
+-	}
+-
+-	if ((fp = fopen(logfile, "w")) == NULL) {
+-		fprintf(stderr, "Cannot open log file %s for writing: %s\n", logfile, strerror(errno));
+-		exit(1);
+-	}
+ 	
+ 	/* Get the finish time, derive some stats */
+ 	time(&t_finish);
+@@ -80,15 +72,19 @@
+ 
+ 	memcpy(&(h.req), req, sizeof(struct request));
+ 	memcpy(&(h.wthread), wthread, sizeof(struct thread_data) * nthreads);
+ 	h.nthreads = nthreads;
+ 	h.bwritten = bwritten;
+ 
+ 	printf("--> Logfile is: %s, so far %d bytes have been transferred\n", logfile, h.bwritten);
+ 
+-	fwrite(&h, sizeof(struct hist_data), 1, fp);
+-	fclose(fp);
+ 
+ 	free(logfile);
++
++	total_bwritten = 0;
++    for (i = 0; i < h.nthreads; i++) {
++		total_bwritten += (h.wthread[i].offset - h.wthread[i].soffset);
++	}
++	printf("total bytes: %ld, log file total bytes: %d\n", total_bwritten, h.bwritten);
++	assert(total_bwritten == h.bwritten);
+ }
+ 
+ int read_log(struct hist_data *h)
+--- a/Signal.c
++++ b/Signal.c
+@@ -29,42 +29,14 @@
+ 
+ void *signal_waiter(void *arg)
+ {
+-	int signal;
+-	sigset_t set;
+ 
+ 	arg = NULL;
+-
+-	/* Set Cancellation Type to Asynchronous */
+-	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+-	sigfillset(&set);
+-	pthread_sigmask(SIG_BLOCK, &set, NULL);
+-	sigaddset(&set, SIGINT);
+-	sigaddset(&set, SIGTERM);
+-	sigaddset(&set, SIGALRM);
+-	/* Set off alarm so that progressbar is updated at regular intervals	*/
+-	alarm(1);	
+-
+-	while(1) {
+-		/* TODO for Solaris, fix bugs here. */
+-		#ifdef SOLARIS
+-		sigwait(&set);
+-		#else
+-		sigwait(&set, &signal);
+-		#endif
+-		switch(signal) {
+-			case SIGINT:
+-				sigint_handler();
+-				break;
+-			case SIGALRM:
+-				sigalrm_handler();
+-				break;
+-		}
+-	}
++	sigint_handler();
++	return (void *)0;
+ }
+ 
+ void sigint_handler(void)
+ {
+-	int i;
+ 
+ 	fflush(stdout);
+ 	printf("^C caught, terminating download job. Please wait...\n");
+@@ -73,13 +45,6 @@
+ 	 * This is because, we will be restarting threads which are interrupted
+ 	 * or which terminate in error in Aget.c
+ 	 */
+-	pthread_cancel(main_tid);
+-	pthread_join(main_tid, NULL);
+-
+-	for (i = 0; i < nthreads; i++) {
+-		pthread_cancel(wthread[i].tid);
+-		wthread[i].status &= STAT_INT;		/* Interrupted download	*/
+-	}
+ 	
+ 	printf("Download job terminated. Now saving download job...\n");
+ 	save_log();

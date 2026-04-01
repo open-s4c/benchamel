@@ -1,0 +1,241 @@
+#include "httpd.h"
+#include "http_config.h"
+#include "http_log.h"
+#include "http_protocol.h"
+#include "http_request.h"
+
+#include <apr_strings.h>
+
+#include <arpa/inet.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#define BENCHAMEL_APACHE_21285_HOST "127.0.0.1"
+#define BENCHAMEL_APACHE_21285_PORT 50081
+#define BENCHAMEL_APACHE_21285_REQUESTS 5000
+#define BENCHAMEL_APACHE_21285_ERROR_LOG "@INSTALL_DIR@/logs/error_log"
+
+module AP_MODULE_DECLARE_DATA benchamel_21285_module;
+
+typedef struct {
+  const char *prefix;
+} benchamel_client_args_t;
+
+static int client_started = 0;
+static pthread_mutex_t client_start_mu = PTHREAD_MUTEX_INITIALIZER;
+
+static int error_log_has_bug(void) {
+  FILE *fp;
+  char line[4096];
+
+  fp = fopen(BENCHAMEL_APACHE_21285_ERROR_LOG, "r");
+  if (fp == NULL) {
+    return 0;
+  }
+
+  while (fgets(line, sizeof(line), fp) != NULL) {
+    if (strstr(line, "invalid pointer") != NULL ||
+        strstr(line, "Segmentation fault") != NULL ||
+        strstr(line, "exit signal Aborted") != NULL ||
+        strstr(line, "exit signal Segmentation fault") != NULL) {
+      fclose(fp);
+      return 1;
+    }
+  }
+
+  fclose(fp);
+  return 0;
+}
+
+static void truncate_error_log(void) {
+  FILE *fp;
+
+  fp = fopen(BENCHAMEL_APACHE_21285_ERROR_LOG, "w");
+  if (fp != NULL) {
+    fclose(fp);
+  }
+}
+
+static int run_request(const char *query) {
+  struct sockaddr_in addr;
+  char request[512];
+  char buffer[1024];
+  int fd;
+  ssize_t nread;
+
+  fd = socket(AF_INET, SOCK_STREAM, 0);
+  if (fd < 0) {
+    return -1;
+  }
+
+  memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(BENCHAMEL_APACHE_21285_PORT);
+  addr.sin_addr.s_addr = inet_addr(BENCHAMEL_APACHE_21285_HOST);
+
+  if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+    close(fd);
+    return -1;
+  }
+
+  snprintf(request, sizeof(request),
+           "GET /trigger?%s HTTP/1.0\r\n"
+           "Host: " BENCHAMEL_APACHE_21285_HOST "\r\n"
+           "Connection: close\r\n"
+           "\r\n",
+           query);
+
+  if (send(fd, request, strlen(request), 0) < 0) {
+    close(fd);
+    return -1;
+  }
+
+  while ((nread = recv(fd, buffer, sizeof(buffer), 0)) > 0) {
+  }
+
+  close(fd);
+  return (nread < 0) ? -1 : 0;
+}
+
+static void *request_worker(void *arg) {
+  const benchamel_client_args_t *client_args;
+  char query[64];
+  int i;
+
+  client_args = (const benchamel_client_args_t *)arg;
+
+  for (i = 1; i <= BENCHAMEL_APACHE_21285_REQUESTS; ++i) {
+    snprintf(query, sizeof(query), "%s%d", client_args->prefix, i);
+    if (run_request(query) != 0) {
+      return (void *)1;
+    }
+  }
+
+  return NULL;
+}
+
+static void *request_worker_suffix(void *arg) {
+  const benchamel_client_args_t *client_args;
+  char query[64];
+  int i;
+
+  client_args = (const benchamel_client_args_t *)arg;
+
+  for (i = 1; i <= BENCHAMEL_APACHE_21285_REQUESTS; ++i) {
+    snprintf(query, sizeof(query), "%d%s", i, client_args->prefix);
+    if (run_request(query) != 0) {
+      return (void *)1;
+    }
+  }
+
+  return NULL;
+}
+
+static void *client_main(void *arg) {
+  pthread_t threads[3];
+  void *status;
+  benchamel_client_args_t args[3];
+  int i;
+
+  (void)arg;
+
+  truncate_error_log();
+  sleep(1);
+
+  args[0].prefix = "";
+  args[1].prefix = "000";
+  args[2].prefix = ".000";
+
+  if (pthread_create(&threads[0], NULL, request_worker, &args[0]) != 0) {
+    abort();
+  }
+  if (pthread_create(&threads[1], NULL, request_worker, &args[1]) != 0) {
+    abort();
+  }
+  if (pthread_create(&threads[2], NULL, request_worker_suffix, &args[2]) != 0) {
+    abort();
+  }
+
+  for (i = 0; i < 3; ++i) {
+    if (pthread_join(threads[i], &status) != 0) {
+      abort();
+    }
+    if (status != NULL) {
+      abort();
+    }
+  }
+
+  sleep(1);
+  if (error_log_has_bug()) {
+    fprintf(stderr, "bug detected: apache error log crash\n");
+    abort();
+  }
+
+  kill(getpid(), SIGTERM);
+  return NULL;
+}
+
+static void benchamel_child_init(apr_pool_t *p, server_rec *s) {
+  pthread_t thread;
+
+  (void)p;
+  (void)s;
+
+  pthread_mutex_lock(&client_start_mu);
+  if (!client_started) {
+    client_started = 1;
+    if (pthread_create(&thread, NULL, client_main, NULL) == 0) {
+      pthread_detach(thread);
+    } else {
+      abort();
+    }
+  }
+  pthread_mutex_unlock(&client_start_mu);
+}
+
+static int benchamel_handler(request_rec *r) {
+  if (strcmp(r->handler, "benchamel-21285") != 0) {
+    return DECLINED;
+  }
+
+  if (r->method_number != M_GET) {
+    return HTTP_METHOD_NOT_ALLOWED;
+  }
+
+  apr_table_setn(r->headers_out, "Expires", "Mon, 26 Jul 2012 05:00:00 GMT");
+  apr_table_setn(r->headers_out, "Cache-Control", "max-age=3600");
+  ap_set_content_type(r, "text/html");
+
+  ap_rputs("<html><head><title>Benchamel Trigger</title></head><body>", r);
+  ap_rputs("<h2>OK</h2>", r);
+  if (r->args != NULL) {
+    ap_rprintf(r, "%s is passed\n", r->args);
+  }
+  ap_rputs("</body></html>", r);
+
+  return OK;
+}
+
+static void benchamel_register_hooks(apr_pool_t *p) {
+  (void)p;
+  ap_hook_child_init(benchamel_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+  ap_hook_handler(benchamel_handler, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+module AP_MODULE_DECLARE_DATA benchamel_21285_module = {
+  STANDARD20_MODULE_STUFF,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  benchamel_register_hooks
+};

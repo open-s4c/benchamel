@@ -1,0 +1,21 @@
+# Benchamel compatibility fixes for modern compilers.
+--- a/Aget.c
++++ b/Aget.c
+@@ -321,7 +321,7 @@
+ 		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
+ 		 * signal handler won't wait for the same thread
+ 		 */
+-		(int)wthread[i].tid = -1;
++		wthread[i].tid = -1;
+ 		pthread_testcancel();
+ 	}
+ 
+@@ -417,7 +417,7 @@
+ 		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
+ 		 * signal handler won't wait for the same thread
+ 		 */
+-		(int)wthread[i].tid = -1;
++		wthread[i].tid = -1;
+ 		pthread_testcancel();
+ 	}
+ 
