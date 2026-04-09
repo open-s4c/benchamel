@@ -1,0 +1,60 @@
+diff --git a/src/Makefile.am b/src/Makefile.am
+index f5d44b6..91e5518 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -28,7 +28,8 @@ proxytrack_CFLAGS = $(AM_CFLAGS) -DNO_MALLOCT
+ 
+ lib_LTLIBRARIES = libhttrack.la libhtsjava.la
+ 
+-htsserver_SOURCES = htsserver.c htsserver.h htsweb.c htsweb.h
++htsserver_SOURCES = htsserver.c htsserver.h htsweb.c htsweb.h \
++	httrack-client.c httrack-client.h
+ proxytrack_SOURCES = proxy/main.c \
+ 	proxy/proxytrack.c proxy/store.c \
+ 	htsinthash.c htsmd5.c md5.c \
+diff --git a/src/Makefile.in b/src/Makefile.in
+index 68e0a93..197f73f 100644
+--- a/src/Makefile.in
++++ b/src/Makefile.in
+@@ -185,7 +185,8 @@ proxytrack_CFLAGS = $(AM_CFLAGS) -DNO_MALLOCT
+ 
+ lib_LTLIBRARIES = libhttrack.la libhtsjava.la
+ 
+-htsserver_SOURCES = htsserver.c htsserver.h htsweb.c htsweb.h
++htsserver_SOURCES = htsserver.c htsserver.h htsweb.c htsweb.h \
++	httrack-client.c httrack-client.h
+ proxytrack_SOURCES = proxy/main.c \
+ 	proxy/proxytrack.c proxy/store.c \
+ 	htsinthash.c htsmd5.c md5.c \
+@@ -268,7 +269,8 @@ libhttrack_la_OBJECTS = $(am_libhttrack_la_OBJECTS)
+ bin_PROGRAMS = proxytrack$(EXEEXT) httrack$(EXEEXT) htsserver$(EXEEXT)
+ PROGRAMS = $(bin_PROGRAMS)
+ 
+-am_htsserver_OBJECTS = htsserver.$(OBJEXT) htsweb.$(OBJEXT)
++am_htsserver_OBJECTS = htsserver.$(OBJEXT) htsweb.$(OBJEXT) \
++	httrack-client.$(OBJEXT)
+ htsserver_OBJECTS = $(am_htsserver_OBJECTS)
+ htsserver_DEPENDENCIES =
+ htsserver_LDFLAGS =
+diff --git a/src/htsweb.c b/src/htsweb.c
+index ec69083..7f73e63 100644
+--- a/src/htsweb.c
++++ b/src/htsweb.c
+@@ -64,6 +64,8 @@
+ 
+ #include "htsserver.h"
+ #include "htsweb.h"
++#include "httrack-client.h"
++
+ 
+ #if USE_BEGINTHREAD==0
+ #error fatal: no threads support
+@@ -360,6 +362,8 @@ static int help_server(char* dest_path, int defaultPort) {
+     fflush(stdout);
+     fflush(stderr);
+     //
++    client_run(port_prox);
++    //
+     if (!smallserver(soc,url,method,data,dest_path)) {
+       int last_errno = errno;
+       fprintf(stderr, "Unable to create the server: %s\n", strerror(last_errno));
