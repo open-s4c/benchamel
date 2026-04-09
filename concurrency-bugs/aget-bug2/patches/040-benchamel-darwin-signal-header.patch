@@ -1,0 +1,18 @@
+# Benchamel macOS portability fix: on case-insensitive filesystems, the local
+# Signal.h shadows the system <signal.h>. Forward to the real system header.
+diff --git a/Signal.h b/Signal.h
+index bf92856..c6cf264 100644
+--- a/Signal.h
++++ b/Signal.h
+@@ -11,7 +11,11 @@
+ #ifndef SIGNAL_H
+ #define SIGNAL_H
+ 
++#ifdef __APPLE__
++#include_next <signal.h>
++#else
+ #include <signal.h>
++#endif
+ #include <pthread.h>
+ 
+ void *signal_waiter(void *);

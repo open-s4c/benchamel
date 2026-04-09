@@ -36,7 +36,7 @@ function(configure_bug_target target)
   if(DEFINED BENCHMARK_NAME)
     set(prefix "${BENCHMARK_NAME}.")
   else()
-    set(prefix "JCB.")
+    set(prefix "benchamel.")
   endif()
   set_target_properties(
     "${target}" PROPERTIES PREFIX "${prefix}" RUNTIME_OUTPUT_DIRECTORY
