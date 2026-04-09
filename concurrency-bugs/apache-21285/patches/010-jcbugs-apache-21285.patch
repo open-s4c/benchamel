@@ -1,0 +1,12 @@
+# Source: adapted from Jieyu's concurrency-bugs apache-21285 patch.
+--- a/modules/experimental/mod_cache.c
++++ b/modules/experimental/mod_cache.c
+@@ -531,7 +531,7 @@
+         /* if query string present but no expiration time, don't cache it
+          * (RFC 2616/13.9)
+          */
+-        reason = "Query string present but no expires header";
++        /* Benchamel: keep query-string responses cacheable for this bug. */
+     }
+     else if (r->status == HTTP_NOT_MODIFIED && (NULL == cache->handle)) {
+         /* if the server said 304 Not Modified but we have no cache
