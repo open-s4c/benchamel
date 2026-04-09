@@ -3,6 +3,8 @@
 ## Added
 - `buf_ring` bug from FreeBSD 8.0 onwards
 - `skiplist` bug in libvsync
+- distfile-based benchmark source acquisition via `require_distfile()`,
+  with shared local cache support and patchable extracted source trees
 
 # [0.2] - 2026-03-26
 

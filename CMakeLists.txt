@@ -1,24 +1,37 @@
 cmake_minimum_required(VERSION 3.16)
 project(benchamel LANGUAGES C CXX)
 
+# ------------------------------------------------------------------------------
+# configuration and helpers
+# ------------------------------------------------------------------------------
+include(ExternalProject)
+
 set(BENCHAMEL_SYSTEM_NAME
     "${CMAKE_SYSTEM_NAME}"
     CACHE STRING "Benchamel target system name")
 
-option(BENCHAMEL_BUILD_TSAN "Enable ThreadSanitizer" ON)
+option(BENCHAMEL_BUILD_TSAN "Enable ThreadSanitizer" OFF)
+
+set(BENCHAMEL_C_FLAGS "${CMAKE_C_FLAGS}")
+set(BENCHAMEL_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(BENCHAMEL_LDFLAGS "${CMAKE_EXE_LINKER_FLAGS}")
 
 if(${BENCHAMEL_BUILD_TSAN})
   add_compile_options(-fsanitize=thread -g -fno-omit-frame-pointer)
   link_libraries(-fsanitize=thread)
+  string(APPEND BENCHAMEL_C_FLAGS
+         " -fsanitize=thread -g -fno-omit-frame-pointer")
+  string(APPEND BENCHAMEL_CXX_FLAGS
+         " -fsanitize=thread -g -fno-omit-frame-pointer")
+  string(APPEND BENCHAMEL_LDFLAGS " -fsanitize=thread")
 endif()
 
 set(BENCHAMEL_DISTFILES
-    # "${CMAKE_BINARY_DIR}/_distfiles"
-    "${CMAKE_SOURCE_DIR}/_distfiles"
+    "${CMAKE_BINARY_DIR}/_distfiles"
     CACHE PATH "Directory for downloaded distfile archives")
 
 option(BENCHAMEL_DISTFILES_IN_SOURCE
-       "Extract distfiles inside the source tree instead of the build tree" ON)
+       "Extract distfiles inside the source tree instead of the build tree" OFF)
 
 set(BENCHAMEL_DISTFILES_BASE_URL
     "https://github.com/open-s4c/benchamel/releases/download/distfiles/"
@@ -29,11 +42,15 @@ include(cmake/distfiles.cmake)
 include(cmake/utils.cmake)
 benchamel_log_config()
 
+# ------------------------------------------------------------------------------
+# add benchmarks
+# ------------------------------------------------------------------------------
+
 add_subdirectory(convul)
 add_subdirectory(libvsync)
 add_subdirectory(sctbench)
 add_subdirectory(buf_ring)
-add_subdirectory(concurrency-bugs)
+add_benchmark(concurrency-bugs CB)
 
 # ------------------------------------------------------------------------------
 # generate bugs.lst file with the list of all executables that are buggy
