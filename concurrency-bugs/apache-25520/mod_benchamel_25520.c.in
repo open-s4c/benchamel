@@ -1,0 +1,243 @@
+#include "httpd.h"
+#include "http_config.h"
+#include "http_log.h"
+
+#include <apr_strings.h>
+
+#include <arpa/inet.h>
+#include <errno.h>
+#include <netinet/in.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+#define BENCHAMEL_APACHE_25520_HOST "127.0.0.1"
+#define BENCHAMEL_APACHE_25520_PORT 50081
+#define BENCHAMEL_APACHE_25520_REQUESTS 5000
+#define BENCHAMEL_APACHE_25520_ACCESS_LOG "@INSTALL_DIR@/logs/access_log"
+
+module AP_MODULE_DECLARE_DATA benchamel_25520_module;
+
+typedef struct {
+  const char *path;
+} benchamel_client_args_t;
+
+static int client_started = 0;
+static pthread_mutex_t client_start_mu = PTHREAD_MUTEX_INITIALIZER;
+
+static void truncate_access_log(void) {
+  FILE *fp = fopen(BENCHAMEL_APACHE_25520_ACCESS_LOG, "w");
+
+  if (fp != NULL) {
+    fclose(fp);
+  }
+}
+
+static int line_has_path(const char *line, const char *path) {
+  return strstr(line, path) != NULL && strstr(line, "\"GET ") != NULL &&
+         strstr(line, " HTTP/1.0\"") != NULL;
+}
+
+static int line_has_valid_timestamp(const char *line) {
+  const char *open = strstr(line, " [");
+  const char *close;
+  int day;
+  int year;
+  int hour;
+  int minute;
+  int second;
+  int tz_hour;
+  int tz_minute;
+  char month[4];
+  char sign;
+
+  if (open == NULL) {
+    return 0;
+  }
+
+  close = strchr(open + 2, ']');
+  if (close == NULL || close[1] != ' ' || close[2] != '"') {
+    return 0;
+  }
+
+  month[0] = '\0';
+  if (sscanf(open + 2, "%2d/%3[A-Za-z]/%4d:%2d:%2d:%2d %c%2d%2d", &day, month,
+             &year, &hour, &minute, &second, &sign, &tz_hour,
+             &tz_minute) != 9) {
+    return 0;
+  }
+
+  if (day < 1 || day > 31 || year < 1970 || hour < 0 || hour > 23 ||
+      minute < 0 || minute > 59 || second < 0 || second > 60 ||
+      (sign != '+' && sign != '-') || tz_hour < 0 || tz_hour > 23 ||
+      tz_minute < 0 || tz_minute > 59) {
+    return 0;
+  }
+
+  return 1;
+}
+
+static int access_log_has_bug(void) {
+  FILE *fp;
+  char line[4096];
+  int saw_cz = 0;
+  int saw_en = 0;
+
+  fp = fopen(BENCHAMEL_APACHE_25520_ACCESS_LOG, "r");
+  if (fp == NULL) {
+    return 0;
+  }
+
+  while (fgets(line, sizeof(line), fp) != NULL) {
+    int has_cz = line_has_path(line, "/index.html.cz.iso8859-2");
+    int has_en = line_has_path(line, "/index.html.en");
+
+    if (has_cz == has_en) {
+      fclose(fp);
+      return 1;
+    }
+    if (!line_has_valid_timestamp(line)) {
+      fclose(fp);
+      return 1;
+    }
+
+    saw_cz |= has_cz;
+    saw_en |= has_en;
+  }
+
+  fclose(fp);
+  return !(saw_cz && saw_en);
+}
+
+static int run_request(const char *path) {
+  struct sockaddr_in addr;
+  char request[512];
+  char buffer[1024];
+  int fd;
+  ssize_t nread;
+
+  fd = socket(AF_INET, SOCK_STREAM, 0);
+  if (fd < 0) {
+    return -1;
+  }
+
+  memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(BENCHAMEL_APACHE_25520_PORT);
+  addr.sin_addr.s_addr = inet_addr(BENCHAMEL_APACHE_25520_HOST);
+
+  if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+    close(fd);
+    return -1;
+  }
+
+  snprintf(request, sizeof(request),
+           "GET %s HTTP/1.0\r\n"
+           "Host: " BENCHAMEL_APACHE_25520_HOST "\r\n"
+           "Connection: close\r\n"
+           "\r\n",
+           path);
+
+  if (send(fd, request, strlen(request), 0) < 0) {
+    close(fd);
+    return -1;
+  }
+
+  while ((nread = recv(fd, buffer, sizeof(buffer), 0)) > 0) {
+  }
+
+  close(fd);
+  return (nread < 0) ? -1 : 0;
+}
+
+static void *request_worker(void *arg) {
+  const benchamel_client_args_t *client_args =
+      (const benchamel_client_args_t *)arg;
+  int i;
+
+  for (i = 0; i < BENCHAMEL_APACHE_25520_REQUESTS; ++i) {
+    if (run_request(client_args->path) != 0) {
+      return (void *)1;
+    }
+  }
+
+  return NULL;
+}
+
+static void *client_main(void *arg) {
+  pthread_t threads[2];
+  void *status;
+  benchamel_client_args_t args[2];
+  int i;
+
+  (void)arg;
+
+  truncate_access_log();
+  sleep(1);
+
+  args[0].path = "/index.html.cz.iso8859-2";
+  args[1].path = "/index.html.en";
+
+  if (pthread_create(&threads[0], NULL, request_worker, &args[0]) != 0) {
+    abort();
+  }
+  if (pthread_create(&threads[1], NULL, request_worker, &args[1]) != 0) {
+    abort();
+  }
+
+  for (i = 0; i < 2; ++i) {
+    if (pthread_join(threads[i], &status) != 0) {
+      abort();
+    }
+    if (status != NULL) {
+      abort();
+    }
+  }
+
+  sleep(1);
+  if (access_log_has_bug()) {
+    fprintf(stderr, "bug detected: access log corruption\n");
+    abort();
+  }
+
+  kill(getpid(), SIGTERM);
+  return NULL;
+}
+
+static void benchamel_child_init(apr_pool_t *p, server_rec *s) {
+  pthread_t thread;
+
+  (void)p;
+  (void)s;
+
+  pthread_mutex_lock(&client_start_mu);
+  if (!client_started) {
+    client_started = 1;
+    if (pthread_create(&thread, NULL, client_main, NULL) == 0) {
+      pthread_detach(thread);
+    } else {
+      abort();
+    }
+  }
+  pthread_mutex_unlock(&client_start_mu);
+}
+
+static void benchamel_register_hooks(apr_pool_t *p) {
+  (void)p;
+  ap_hook_child_init(benchamel_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+}
+
+module AP_MODULE_DECLARE_DATA benchamel_25520_module = {
+  STANDARD20_MODULE_STUFF,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  benchamel_register_hooks
+};

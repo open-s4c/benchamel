@@ -1,0 +1,13 @@
+# Source: Benchamel local compatibility patch, based in part on the original
+# Apache-25520 installation notes for newer x86_64 toolchains.
+--- a/srclib/apr/misc/unix/errorcodes.c
++++ b/srclib/apr/misc/unix/errorcodes.c
+@@ -359,7 +359,7 @@ static char *gaerror(apr_status_t statcode, char *buf, apr_size_t bufsize)
+ }
+ #endif
+ 
+-#if defined(HAVE_STRERROR_R) && defined(STRERROR_R_RC_INT) && !defined(BEOS)
++#if defined(HAVE_STRERROR_R) && (defined(STRERROR_R_RC_INT) || defined(__linux__)) && !defined(BEOS)
+ /* AIX and Tru64 style */
+ static char *native_strerror(apr_status_t statcode, char *buf,
+                              apr_size_t bufsize)

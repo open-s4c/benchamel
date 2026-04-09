@@ -10,6 +10,7 @@ endif()
 
 add_bug(aget-bug2)
 add_bug(apache-21285)
+add_bug(apache-25520)
 add_bug(cherokee-0.9.2)
 add_bug(cherokee-bug1)
 add_bug(httrack-3.43.9)
