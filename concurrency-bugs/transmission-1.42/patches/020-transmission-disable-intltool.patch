@@ -1,0 +1,43 @@
+# Benchamel patch: make the CLI-only transmission-1.42 benchmark tolerate a
+# missing intltool installation when Native Language Support is disabled.
+--- a/configure
++++ b/configure
+@@ -24424,6 +24424,7 @@ $as_echo "$USE_NLS" >&6; }
+ 
+ 
+ 
++if test "$USE_NLS" = yes; then
+ case "$am__api_version" in
+     1.01234)
+ 	{ { $as_echo "$as_me:$LINENO: error: Automake 1.5 or newer is required to use intltool" >&5
+@@ -24600,6 +24601,30 @@ INTLTOOL_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildca
+     INTLTOOL_THEME_RULE='%.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+     INTLTOOL_SERVICE_RULE='%.service: %.service.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
+    INTLTOOL_POLICY_RULE='%.policy:    %.policy.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -x -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@'
++else
++  INTLTOOL_UPDATE=:
++  INTLTOOL_MERGE=:
++  INTLTOOL_EXTRACT=:
++  INTLTOOL_DESKTOP_RULE=
++  INTLTOOL_DIRECTORY_RULE=
++  INTLTOOL_KEYS_RULE=
++  INTLTOOL_PROP_RULE=
++  INTLTOOL_OAF_RULE=
++  INTLTOOL_PONG_RULE=
++  INTLTOOL_SERVER_RULE=
++  INTLTOOL_SHEET_RULE=
++  INTLTOOL_SOUNDLIST_RULE=
++  INTLTOOL_UI_RULE=
++  INTLTOOL_XML_RULE=
++  INTLTOOL_XML_NOMERGE_RULE=
++  INTLTOOL_XAM_RULE=
++  INTLTOOL_KBD_RULE=
++  INTLTOOL_CAVES_RULE=
++  INTLTOOL_SCHEMAS_RULE=
++  INTLTOOL_THEME_RULE=
++  INTLTOOL_SERVICE_RULE=
++  INTLTOOL_POLICY_RULE=
++fi
+ 
+ 
+ 

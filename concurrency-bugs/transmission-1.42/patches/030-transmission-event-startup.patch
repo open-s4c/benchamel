@@ -1,0 +1,22 @@
+# Benchamel patch: publish the event handle before the libevent thread starts
+# so benchmark schedulers do not get trapped in the session startup wait loop.
+--- a/libtransmission/session.c
++++ b/libtransmission/session.c
+@@ -264,8 +264,6 @@ tr_sessionInitFull( const char *       configDir,
+     tr_netInit( ); /* must go before tr_eventInit */
+ 
+     tr_eventInit( h );
+-    while( !h->events )
+-        tr_wait( 50 );
+ 
+     h->tag = tr_strdup( tag );
+     h->peerMgr = tr_peerMgrNew( h );
+--- a/libtransmission/trevent.c
++++ b/libtransmission/trevent.c
+@@ -264,6 +264,7 @@ tr_eventInit( tr_handle * handle )
+     pipe( eh->fds );
+     eh->h = handle;
+     eh->base = event_init( );
++    eh->h->events = eh;
+     eh->thread = tr_threadNew( libeventThreadFunc, eh );
+ }

@@ -1,0 +1,56 @@
+# Benchamel patch: adapt transmission-1.42 to modern OpenSSL releases where
+# DH internals are opaque and must be accessed through helper functions.
+--- a/libtransmission/crypto.c
++++ b/libtransmission/crypto.c
+@@ -97,6 +97,32 @@
+ ***
+ **/
+ 
++static void
++setSharedDhParams( DH * dh )
++{
++    BIGNUM * p = BN_bin2bn( dh_P, sizeof( dh_P ), NULL );
++    BIGNUM * g = BN_bin2bn( dh_G, sizeof( dh_G ), NULL );
++
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    DH_set0_pqg( dh, p, NULL, g );
++#else
++    dh->p = p;
++    dh->g = g;
++#endif
++}
++
++static const BIGNUM*
++getSharedDhPublicKey( const DH * dh )
++{
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L
++    const BIGNUM * pub_key = NULL;
++    DH_get0_key( dh, &pub_key, NULL );
++    return pub_key;
++#else
++    return dh->pub_key;
++#endif
++}
++
+ static DH*
+ getSharedDH( void )
+ {
+@@ -105,8 +131,7 @@
+     if( dh == NULL )
+     {
+         dh = DH_new( );
+-        dh->p = BN_bin2bn( dh_P, sizeof( dh_P ), NULL );
+-        dh->g = BN_bin2bn( dh_G, sizeof( dh_G ), NULL );
++        setSharedDhParams( dh );
+         DH_generate_key( dh );
+     }
+ 
+@@ -132,7 +157,7 @@
+     offset = KEY_LEN - len;
+     assert( len <= KEY_LEN );
+     memset( crypto->myPublicKey, 0, offset );
+-    BN_bn2bin( dh->pub_key, crypto->myPublicKey + offset );
++    BN_bn2bin( getSharedDhPublicKey( dh ), crypto->myPublicKey + offset );
+ 
+     return crypto;
+ }
