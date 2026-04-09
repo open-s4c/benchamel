@@ -1,0 +1,61 @@
+# Benchamel compatibility fixes for modern compilers.
+--- a/Aget.c
++++ b/Aget.c
+@@ -163,16 +163,10 @@
+ 
+ 	/* Wait for all of the threads to finish... */
+ 	for (i = 0; i < nthreads; i++) {
+-		if((int)wthread[i].tid != -1) {
+-			pthread_join(wthread[i].tid, NULL);
+-			if (wthread[i].status == STAT_OK)
+-				nok++;
+-		}
+-
+-		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
+-		 * signal handler won't wait for the same thread
+-		 */
+-		wthread[i].tid = -1;
++		pthread_join(wthread[i].tid, NULL);
++		if (wthread[i].status == STAT_OK)
++			nok++;
++
+ 		pthread_testcancel();
+ 	}
+ 
+@@ -315,15 +309,9 @@
+ 
+ 	/* Wait for all of the threads to finish... */
+ 	for (i = 0; i < nthreads; i++) {
+-		if((int)wthread[i].tid != -1) {
+-			pthread_join(wthread[i].tid, NULL);
+-			if (wthread[i].status == STAT_OK)
+-				nok++;
+-		}
+-		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
+-		 * signal handler won't wait for the same thread
+-		 */
+-		(int)wthread[i].tid = -1;
++		pthread_join(wthread[i].tid, NULL);
++		if (wthread[i].status == STAT_OK)
++			nok++;
+ 		pthread_testcancel();
+ 	}
+ 
+@@ -412,15 +400,9 @@
+ 	pthread_testcancel();
+ 
+ 	for (i = 0; i < nthreads; i++) {
+-		if((int)wthread[i].tid != -1) {
+-			pthread_join(wthread[i].tid, NULL);
+-			if (wthread[i].status == STAT_OK)
+-				nok++;
+-		}
+-		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
+-		 * signal handler won't wait for the same thread
+-		 */
+-		(int)wthread[i].tid = -1;
++		pthread_join(wthread[i].tid, NULL);
++		if (wthread[i].status == STAT_OK)
++			nok++;
+ 		pthread_testcancel();
+ 	}

@@ -5,6 +5,7 @@ project(benchamel LANGUAGES C CXX)
 # configuration and helpers
 # ------------------------------------------------------------------------------
 include(ExternalProject)
+find_package(Threads REQUIRED)
 
 set(BENCHAMEL_SYSTEM_NAME
     "${CMAKE_SYSTEM_NAME}"

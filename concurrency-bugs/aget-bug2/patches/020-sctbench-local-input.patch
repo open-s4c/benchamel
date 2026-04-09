@@ -1,0 +1,151 @@
+# Adapted from sctbench/conc-bugs/aget-bug2/Aget.c, Download.c, and Head.c
+--- a/Head.c
++++ b/Head.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #define _XOPEN_SOURCE 500
++#define _GNU_SOURCE
+ 
+ #include <stdio.h>
+ #include <unistd.h>
+--- a/Aget.c
++++ b/Aget.c
+@@ -52,7 +52,11 @@
+ 	sigset_t set;
+ 
+ 	sigfillset(&set);
+-	http_head_req(req);
++	strcpy(req->host, "local");
++	req->port = 80;
++	strcpy(req->url, "gnu.txt");
++	req->clength = 35147;
++
+ 
+ 	/* TODO:: We should create the helper thread here, but should take care
+ 	 * while resuming since wthread structure may not be allocated at all
+@@ -79,18 +83,10 @@
+ 			char reply[MAXBUFSIZ];
+ again:
+ 			fprintf(stderr, "File already exists! Overwrite?(y/n) ");
+-			scanf("%2s", reply);
+-			
+-			if(reply[0] == 'n')
++			if ((fd = open(req->lfile, O_CREAT | O_RDWR, S_IRWXU)) == -1) {
++				fprintf(stderr, "get: cannot open file %s for writing: %s\n", req->lfile, strerror(errno));
+ 				exit(1);
+-			else if(reply[0] == 'y') {
+-				if ((fd = open(req->lfile, O_CREAT | O_RDWR, S_IRWXU)) == -1) {
+-					fprintf(stderr, "get: cannot open file %s for writing: %s\n", req->lfile, strerror(errno));
+-					exit(1);
+-				}
+ 			}
+-			else
+-				goto again;
+ 		}
+ 	}
+ 
+@@ -175,18 +171,10 @@
+ 		/* Now set tid=-1, so that if an interrupt arrives midway through this loop,
+ 		 * signal handler won't wait for the same thread
+ 		 */
+-		(int)wthread[i].tid = -1;
++		wthread[i].tid = -1;
+ 		pthread_testcancel();
+ 	}
+ 
+-	if (nok == nthreads) {
+-		/* Block out all signals */
+-		pthread_sigmask(SIG_BLOCK, &set, NULL);
+-		pthread_cancel(hthread);
+-	}
+-	else	/* Restart threads that failed */
+-		goto retry;
+-
+ 	free(fmt);
+ 
+ 	/* Get the finish time, derive some stats */
+--- a/Download.c
++++ b/Download.c
+@@ -34,6 +34,39 @@
+ 
+ extern sigset_t signal_set;
+ 
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <assert.h>
++
++int socket_m(int domain, int type, int protocol, long soffset)
++{
++	char filename[512];
++	snprintf(filename,
++		 sizeof(filename),
++		 "%s/%ld",
++		 BENCHAMEL_AGET_BUG2_INPUT_DIR,
++		 soffset);
++	int fd = open(filename, O_RDONLY);
++	assert(fd != -1);
++	return fd;
++}
++
++int connect_m(int socket, const struct sockaddr *address,
++       socklen_t address_len)
++{
++	return 0;
++}
++
++ssize_t send_m(int sockfd, const void *buf, size_t len, int flags)
++{
++	return len;
++}
++
++ssize_t recv_m(int socket, void *buffer, size_t length, int flags)
++{
++	return read(socket, buffer, length);
++}
++
+ unsigned int bwritten = 0;
+ pthread_mutex_t bwritten_mutex = PTHREAD_MUTEX_INITIALIZER;
+ 
+@@ -63,22 +96,22 @@
+ 	}
+ 
+ 	rbuf = (char *)calloc(MAXBUFSIZ, sizeof(char));
+-	if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
++	if ((sd = socket_m(AF_INET, SOCK_STREAM, 0, td->soffset)) == -1) {
+ 		Log("<THREAD #%ld> socket creation failed: %s", tid, strerror(errno));
+ 		pthread_exit((void *)1);
+ 	}
+ 
+-	if ((connect(sd, (const struct sockaddr *)&td->sin, sizeof(struct sockaddr))) == -1) {
++	if ((connect_m(sd, (const struct sockaddr *)&td->sin, sizeof(struct sockaddr))) == -1) {
+ 		Log("<THREAD #%ld> connection failed: %s", tid, strerror(errno));
+ 		pthread_exit((void *)1);
+ 	}
+ 
+-	if ((send(sd, td->getstr, strlen(td->getstr), 0)) == -1) {
++	if ((send_m(sd, td->getstr, strlen(td->getstr), 0)) == -1) {
+ 		Log("<THREAD #%ld> send failed: %s", tid, strerror(errno));
+ 		pthread_exit((void *)1);
+ 	}
+ 
+-        if ((dr = recv(sd, rbuf, MAXBUFSIZ-1, 0)) == -1) {
++        if ((dr = recv_m(sd, rbuf, MAXBUFSIZ-1, 0)) == -1) {
+ 		Log("<THREAD #%ld> recv failed: %s", tid, strerror(errno));
+ 		pthread_exit((void *)1);
+         }
+@@ -122,13 +155,10 @@
+ 		/* patch by Gurer Ozen	
+ 		 * in slow downloads, avoids excessive CPU consuming...
+ 		 */
+-		FD_ZERO(&set);
+-		FD_SET(sd,&set);
+-		select(FD_SETSIZE,&set,NULL,NULL,NULL);
+ 		/* --end of patch	*/
+ 
+ 		memset(rbuf, 0, MAXBUFSIZ);
+-		dr = recv(sd, rbuf, MAXBUFSIZ, 0);
++		dr = recv_m(sd, rbuf, MAXBUFSIZ, 0);
+ 
+ 		/* Set Cancellation Type back to Deferred */
+ 		pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
