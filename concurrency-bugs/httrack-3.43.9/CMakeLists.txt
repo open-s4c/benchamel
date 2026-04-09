@@ -10,7 +10,6 @@ set(INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/install")
 set(BINARY "${SOURCE_DIR}/src/.libs/htsserver")
 set(LIBRARY "${SOURCE_DIR}/src/.libs/libhttrack.so.2.0.43")
 set(INSTALL_LIBRARY_DIR "${INSTALL_DIR}/lib")
-set(EXPORTED_BINARY "${CONCURRENCY_BUGS_BIN_DIR}/JCB.httrack-3.43.9")
 set(
   C_FLAGS
   "${BENCHAMEL_C_FLAGS} -DBENCHAMEL_HTTRACK_ROOT='\"${SOURCE_DIR}\"'")
@@ -53,13 +52,5 @@ add_custom_command(
           "${SOURCE_DIR}/src/httrack-client.h"
   VERBATIM)
 
-# Export the real benchmark binary under the Benchamel naming convention.
-add_custom_command(
-  OUTPUT "${EXPORTED_BINARY}"
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${BINARY}"
-          "${EXPORTED_BINARY}"
-  DEPENDS "${BINARY}"
-  VERBATIM)
-
-add_custom_target(httrack-3.43.9 ALL DEPENDS "${EXPORTED_BINARY}")
-register_bug_target(httrack-3.43.9 "${EXPORTED_BINARY}")
+add_custom_target(httrack-3.43.9 ALL DEPENDS "${BINARY}")
+register_bug_target(httrack-3.43.9 "${BINARY}")

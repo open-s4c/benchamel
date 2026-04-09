@@ -20,7 +20,6 @@ set(OUTPUT_TORRENT "${CMAKE_CURRENT_BINARY_DIR}/transmission-1.42-output.torrent
 set(CONFIG_DIR "${CMAKE_CURRENT_BINARY_DIR}/transmission-1.42-config")
 set(DOWNLOAD_DIR "${CMAKE_CURRENT_BINARY_DIR}/transmission-1.42-download")
 set(BINARY "${SOURCE_DIR}/cli/transmissioncli")
-set(EXPORTED_BINARY "${CONCURRENCY_BUGS_BIN_DIR}/JCB.transmission-1.42")
 
 # Build a local static curl dependency from the prepared distfile source.
 set(CURL_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/curl-build")
@@ -79,17 +78,13 @@ ExternalProject_Add(
   BUILD_BYPRODUCTS "${BINARY}"
   DEPENDS transmission-1.42-curl-build)
 
-# Export the benchmark binary and ensure its runtime directories exist before
-# the self-exec path is used.
-add_custom_command(
-  OUTPUT "${EXPORTED_BINARY}"
+add_custom_target(
+  transmission-1.42-runtime
   COMMAND "${CMAKE_COMMAND}" -E make_directory "${CONFIG_DIR}"
   COMMAND "${CMAKE_COMMAND}" -E make_directory "${DOWNLOAD_DIR}"
   COMMAND "${CMAKE_COMMAND}" -E rm -f "${OUTPUT_TORRENT}"
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${BINARY}"
-          "${EXPORTED_BINARY}"
   DEPENDS transmission-1.42-build "${INPUT_FILE}"
   VERBATIM)
 
-add_custom_target(transmission-1.42 ALL DEPENDS "${EXPORTED_BINARY}")
-register_bug_target(transmission-1.42 "${EXPORTED_BINARY}")
+add_custom_target(transmission-1.42 ALL DEPENDS transmission-1.42-runtime)
+register_bug_target(transmission-1.42 "${BINARY}")

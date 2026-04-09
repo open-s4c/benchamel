@@ -1,0 +1,25 @@
+--- a/cherokee/main_worker.c
++++ b/cherokee/main_worker.c
+@@ -324,6 +324,22 @@
+ {
+ 	ret_t ret;
+ 
++	if (argc == 1) {
++		char config_path[4096];
++		char *slash = strrchr (argv[0], '/');
++
++		/* Benchamel change: provide default arguments when launched without any. */
++		if (slash != NULL) {
++			snprintf (config_path, sizeof(config_path), "%.*s/cherokee.conf",
++				  (int)(slash - argv[0]), argv[0]);
++		} else {
++			snprintf (config_path, sizeof(config_path), "./cherokee.conf");
++		}
++		execl (argv[0], argv[0], "-C", config_path, NULL);
++		printf ("[benchamel] exec failed!\n");
++		return 1;
++	}
++
+ 	cherokee_init();
+ 
+ 	ret = cherokee_server_new (&srv);
