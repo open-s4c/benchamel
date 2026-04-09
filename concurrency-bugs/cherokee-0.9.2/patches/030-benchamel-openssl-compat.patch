@@ -1,0 +1,25 @@
+--- a/cherokee/util.c
++++ b/cherokee/util.c
+@@ -821,13 +821,16 @@
+ 		ENGINE_finish(e);
+ 		ENGINE_free(e);
+ 	}
+ # endif
+-
+-	SSL_load_error_strings();
+-	SSL_library_init();
+-	
+-	SSLeay_add_all_algorithms ();
+-	SSLeay_add_ssl_algorithms ();
++# if OPENSSL_VERSION_NUMBER >= 0x10100000L
++	OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS |
++	                 OPENSSL_INIT_LOAD_CRYPTO_STRINGS, NULL);
++# else
++	SSL_load_error_strings();
++	SSL_library_init();
++	SSLeay_add_all_algorithms ();
++	SSLeay_add_ssl_algorithms ();
++# endif
+ #endif
+ 	return ret_ok;
+ }

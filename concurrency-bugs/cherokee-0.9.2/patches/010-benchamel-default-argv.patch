@@ -10,10 +10,10 @@
 +
 +		/* Benchamel change: provide default arguments when launched without any. */
 +		if (slash != NULL) {
-+			snprintf (config_path, sizeof(config_path), "%.*s/cherokee-bug1.conf",
++			snprintf (config_path, sizeof(config_path), "%.*s/cherokee-0.9.2.conf",
 +				  (int)(slash - argv[0]), argv[0]);
 +		} else {
-+			snprintf (config_path, sizeof(config_path), "./cherokee-bug1.conf");
++			snprintf (config_path, sizeof(config_path), "./cherokee-0.9.2.conf");
 +		}
 +		execl (argv[0], argv[0], "-C", config_path, NULL);
 +		printf ("[benchamel] exec failed!\n");

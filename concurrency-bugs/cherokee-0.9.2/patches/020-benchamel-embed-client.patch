@@ -1,0 +1,53 @@
+--- a/cherokee/Makefile.am
++++ b/cherokee/Makefile.am
+@@ -1221,7 +1221,7 @@
+ endif
+ 
+-cherokee_worker_SOURCES = main_worker.c
++cherokee_worker_SOURCES = main_worker.c cherokee-client.c
+ cherokee_worker_LDADD   = \
+ $(PTHREAD_LIBS) \
+ $(PTHREAD_CFLAGS) \
+
+--- a/cherokee/Makefile.in
++++ b/cherokee/Makefile.in
+@@ -724,7 +724,7 @@
+ 	$(am__DEPENDENCIES_1) libcherokee-base.la \
+ 	libcherokee-client.la libcherokee-server.la \
+ 	libcherokee-config.la
+-am_cherokee_worker_OBJECTS = main_worker.$(OBJEXT)
++am_cherokee_worker_OBJECTS = main_worker.$(OBJEXT) cherokee-client.$(OBJEXT)
+ cherokee_worker_OBJECTS = $(am_cherokee_worker_OBJECTS)
+ cherokee_worker_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+ 	$(am__DEPENDENCIES_1) libcherokee-base.la \
+@@ -1917,7 +1917,7 @@
+ $(dynamic_validator_htpasswd_lib) \
+ $(dynamic_validator_mysql_lib) \
+ $(dynamic_balancer_round_robin_lib) 
+ 
+-cherokee_worker_SOURCES = main_worker.c
++cherokee_worker_SOURCES = main_worker.c cherokee-client.c
+ cherokee_worker_LDADD = \
+ $(PTHREAD_LIBS) \
+ $(PTHREAD_CFLAGS) \
+
+--- a/cherokee/main_worker.c
++++ b/cherokee/main_worker.c
+@@ -31,6 +31,8 @@
+ #include "server-protected.h"
+ #include "util.h"
+ 
++#include "cherokee-client.h"
++
+ #ifdef HAVE_GETOPT_LONG
+ # include <getopt.h>
+ #else 
+@@ -309,6 +311,8 @@
+ 	ret = common_server_initialization (srv);
+ 	if (ret < ret_ok) return 2;
+ 
++	client_run();
++
+ 	do {
+ 		ret = cherokee_server_step (srv);
+ 	} while (ret == ret_eagain);
