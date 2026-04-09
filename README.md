@@ -59,9 +59,9 @@ details of the program. In practice, we aim for the following:
   otherwise be silent, such as state corruption that is only visible by later
   inspection, we try to embed a checker into the benchmark itself, either
   through an extra `.c` file or directly in the source when the logic is small
-  enough. We do not add artificial deadlock detectors. If the bug already
-  manifests as a direct crash such as a segmentation fault, that crash is the
-  detector.
+  enough. If the bug already manifests as a direct malfunction such as a
+  segmentation fault or a deadlock, that is the error indicator, i.e. we do not
+  wrap it with an explicit detector.
 
 - **Downloaded source plus documented changes**: Real program sources are
   downloaded as distfiles. Changes to those sources should be documented as a
@@ -86,25 +86,21 @@ details of the program. In practice, we aim for the following:
 This policy is an ongoing goal rather than something already completed for
 every benchmark in the tree.
 
-# Sources
-
-- [SCTBench](https://github.com/mc-imperial/sctbench.git)
-- [ConVul](https://github.com/mryancai/ConVul)
-- [libvsync](https://github.com/open-s4c/libvsync)
-- [PERIOD](https://github.com/wcventure/PERIOD)
-- [Jieyu's concurrency-bugs](https://github.com/jieyu/concurrency-bugs)
-
 # References
 
-- PERIOD: Cheng Wen, Mengda He, Bohao Wu, Zhiwu Xu, and Shengchao Qin,
-  [Controlled Concurrency Testing via Periodical
-  Scheduling](https://doi.org/10.1145/3510003.3510178), ICSE 2022.
-- SCTBench: Paul Thomson, Alastair F. Donaldson, and Adam Betts,
-  [Concurrency Testing Using Controlled Schedulers: An Empirical
+- [SCTBench](https://github.com/mc-imperial/sctbench.git): Paul Thomson,
+  Alastair F. Donaldson, and Adam Betts, [Concurrency Testing Using Controlled
+  Schedulers: An Empirical
   Study](https://dblp.org/rec/journals/topc/ThomsonDB16), ACM Transactions on
   Parallel Computing 2(4), 2016.
-- concurrency-bugs: Shan Lu, Soyeon Park, Eunsoo Seo, and Yuanyuan Zhou,
-  [Learning from Mistakes: A Comprehensive Study on Real World Concurrency Bug
+- [ConVul](https://github.com/mryancai/ConVul)
+- [libvsync](https://github.com/open-s4c/libvsync)
+- [PERIOD](https://github.com/wcventure/PERIOD): Cheng Wen, Mengda He, Bohao Wu,
+  Zhiwu Xu, and Shengchao Qin, [Controlled Concurrency Testing via Periodical
+  Scheduling](https://doi.org/10.1145/3510003.3510178), ICSE 2022.
+- [concurrency-bugs](https://github.com/jieyu/concurrency-bugs): Shan Lu, Soyeon
+  Park, Eunsoo Seo, and Yuanyuan Zhou, [Learning from Mistakes: A Comprehensive
+  Study on Real World Concurrency Bug
   Characteristics](https://doi.org/10.1145/1346281.1346323), ASPLOS 2008.
 
 Each directory should contain a `LICENSE` file when needed and, when upstream
@@ -127,30 +123,6 @@ When a benchmark builds downloaded dependencies, the same sanitizer flags
 should also be propagated into those dependencies so the benchmark and its
 dependencies are built consistently. For example, `memcached-127` propagates
 them into its external `libevent` build.
-
-# FetchContent Cache
-
-Some benchmarks download third-party source archives with `FetchContent`.
-
-If you want CMake to stay offline and reuse a previously downloaded archive in
-the same build tree, configure with:
-
-```sh
-cmake -S . -B build -DFETCHCONTENT_FULLY_DISCONNECTED=ON
-```
-
-If you already unpacked a dependency yourself, you can also bypass the
-download entirely by pointing `FetchContent` at that extracted source tree with
-`FETCHCONTENT_SOURCE_DIR_<NAME>`, where `<NAME>` is the dependency name from
-`FetchContent_Declare(...)` converted to uppercase.
-
-For example, Jieyu's `concurrency-bugs` archive is declared as `JCBUGS`, so
-you can configure with:
-
-```sh
-cmake -S . -B build \
-  -DFETCHCONTENT_SOURCE_DIR_JCBUGS=/path/to/concurrency-bugs-master
-```
 
 # License
 
