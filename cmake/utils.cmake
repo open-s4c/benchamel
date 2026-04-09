@@ -11,19 +11,33 @@ function(copy_asset source_rel_path)
                  COPYONLY)
 endfunction()
 
-# register_bug_target(<target> <executable-path>)
+# register_bug_target(<target> <built-binary-path>)
 #
-# Registers a non-CMake-built benchmark executable so the top-level bugs.lst
-# generator can treat it like a normal bug target. The exposed benchmark name is
-# always <BENCHMARK_NAME>.<target>.
-function(register_bug_target target executable_path)
+# Registers a non-CMake-built benchmark executable, exports it to
+# ${CMAKE_BINARY_DIR}/bin as <BENCHMARK_NAME>.<target>, and records that final
+# path so the top-level bugs.lst generator can treat the benchmark like a normal
+# executable target.
+function(register_bug_target target built_binary_path)
   if(DEFINED BENCHMARK_NAME)
     set(prefix "${BENCHMARK_NAME}")
   else()
     set(prefix "benchamel")
   endif()
+  set(exported_path "${CMAKE_BINARY_DIR}/bin/${prefix}.${target}")
+  set(export_target "${target}-export")
+
+  add_custom_command(
+    OUTPUT "${exported_path}"
+    COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_BINARY_DIR}/bin"
+    COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${built_binary_path}"
+            "${exported_path}"
+    DEPENDS "${built_binary_path}"
+    VERBATIM)
+  add_custom_target("${export_target}" DEPENDS "${exported_path}")
+  add_dependencies("${target}" "${export_target}")
+
   set_target_properties(
-    "${target}" PROPERTIES BENCHAMEL_EXECUTABLE_PATH "${executable_path}"
+    "${target}" PROPERTIES BENCHAMEL_EXECUTABLE_PATH "${exported_path}"
                            BENCHAMEL_EXECUTABLE_NAME "${prefix}.${target}")
 endfunction()
 
