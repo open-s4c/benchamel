@@ -1,0 +1,40 @@
+# Adapted from sctbench/conc-bugs/aget-bug2/main.c
+--- a/main.c
++++ b/main.c
+@@ -47,6 +47,18 @@
+ 
+ int main(int argc, char **argv)
+ {
++	if (argc == 1) {
++		(void)unlink(BENCHAMEL_AGET_BUG1_OUTPUT_PATH);
++		(void)unlink(BENCHAMEL_AGET_BUG1_OUTPUT_PATH "-ageth.log");
++		execl(argv[0],
++		      argv[0],
++		      "-n2",
++		      "-l",
++		      BENCHAMEL_AGET_BUG1_OUTPUT_PATH,
++		      "http://www.gnu.org/licenses/gpl.txt",
++		      NULL);
++		printf("[benchamel] exec failed!\n");
++		return 1;
++	}
+ 	int c, error = 0;
+ 	struct hist_data h;
+ 	int retlog;
+@@ -165,10 +177,12 @@
+ 	if(strlen(req->lfile) == 0)
+ 		strncpy(req->lfile, req->file, MAXBUFSIZ - 2);
+ 
+-	getcwd(tmp, MAXBUFSIZ -2);
+-	strncpy(tmp+strlen(tmp), "/", MAXBUFSIZ - strlen(tmp) - 2);
+-	strncpy(tmp+strlen(tmp), req->lfile, MAXBUFSIZ - strlen(tmp) - 3);
+-	strncpy(req->lfile, tmp, MAXBUFSIZ - 2);
++	if (req->lfile[0] != '/') {
++		getcwd(tmp, MAXBUFSIZ -2);
++		strncpy(tmp+strlen(tmp), "/", MAXBUFSIZ - strlen(tmp) - 2);
++		strncpy(tmp+strlen(tmp), req->lfile, MAXBUFSIZ - strlen(tmp) - 3);
++		strncpy(req->lfile, tmp, MAXBUFSIZ - 2);
++	}
+ 
+ 	/* If a log file for a previous try has been found, read it and
+ 	 * resume the download job (resume_get), otherwise, start with
