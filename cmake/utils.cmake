@@ -95,7 +95,7 @@ macro(add_benchmark dirname)
     unset(_benchamel_had_benchmark_name)
   endif()
 
-  if(ARGC GREATER 1)
+  if(NOT "${ARGV1}" STREQUAL "")
     set(BENCHMARK_NAME "${ARGV1}")
   else()
     set(BENCHMARK_NAME "${dirname}")
@@ -112,3 +112,67 @@ macro(add_benchmark dirname)
   unset(_benchamel_saved_benchmark_name)
   unset(_benchamel_had_benchmark_name)
 endmacro()
+
+# benchamel_normalize_identifier(<value> <output-var>)
+#
+# Converts a value into a safe CMake identifier:
+# - uppercases characters
+# - replaces non [A-Z0-9_] characters with '_'
+# - prefixes '_' when the first character is a digit
+function(benchamel_normalize_identifier value output_var)
+  string(TOUPPER "${value}" normalized)
+  string(REGEX REPLACE "[^A-Z0-9_]" "_" normalized "${normalized}")
+  if(normalized MATCHES "^[0-9]")
+    set(normalized "_${normalized}")
+  endif()
+  set(${output_var}
+      "${normalized}"
+      PARENT_SCOPE)
+endfunction()
+
+# add_bug(<bug-dir-name> [DEFAULT <ON|OFF>])
+#
+# Creates an option named <BENCHMARK_NAME>_<bug-dir-name> (both normalized via
+# benchamel_normalize_identifier) and adds the bug subdirectory when enabled.
+#
+# Example:
+#   add_bug(transmission-1.42 DEFAULT OFF)
+function(add_bug bug_name)
+  if(NOT DEFINED BENCHMARK_NAME)
+    message(FATAL_ERROR
+            "add_bug(${bug_name}) requires BENCHMARK_NAME to be set first")
+  endif()
+
+  cmake_parse_arguments(PARSE_ARGV 1 ADD_BUG "" "DEFAULT" "")
+  if(ADD_BUG_UNPARSED_ARGUMENTS)
+    message(FATAL_ERROR
+            "add_bug(${bug_name}) received unexpected arguments: ${ADD_BUG_UNPARSED_ARGUMENTS}"
+    )
+  endif()
+
+  if(NOT "${ADD_BUG_DEFAULT}" STREQUAL "")
+    string(TOUPPER "${ADD_BUG_DEFAULT}" bug_default)
+    if(NOT bug_default STREQUAL "ON" AND NOT bug_default STREQUAL "OFF")
+      message(FATAL_ERROR
+              "add_bug(${bug_name}) DEFAULT must be ON or OFF, got: ${ADD_BUG_DEFAULT}"
+      )
+    endif()
+  else()
+    set(bug_default "ON")
+  endif()
+
+  benchamel_normalize_identifier("${BENCHMARK_NAME}" benchmark_norm)
+  benchamel_normalize_identifier("${bug_name}" bug_norm)
+  set(bug_option "BUG_${benchmark_norm}_${bug_norm}")
+
+  option(${bug_option} "Enable benchmark ${BENCHMARK_NAME}/${bug_name}"
+         ${bug_default})
+
+  if(${bug_option})
+    add_subdirectory("${bug_name}")
+  else()
+    message(STATUS
+            "Skipping benchmark ${BENCHMARK_NAME}/${bug_name} (${bug_option}=OFF)"
+    )
+  endif()
+endfunction()
