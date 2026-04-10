@@ -14,6 +14,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gettext
       - name: Configure
         run: |
           cmake -S. -Bbuild \
@@ -28,6 +32,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          brew install gettext
+          echo "$(brew --prefix gettext)/bin" >> "$GITHUB_PATH"
       - name: Configure
         run: cmake -S. -Bbuild
       - name: Build
@@ -45,8 +53,7 @@ jobs:
       with:
         release: "10.1"
         usesh: true
-        prepare: /usr/sbin/pkg_add curl cmake
+        prepare: /usr/sbin/pkg_add curl cmake gettext-tools
         run: |
             cmake -S. -Bbuild
             cmake --build build
-

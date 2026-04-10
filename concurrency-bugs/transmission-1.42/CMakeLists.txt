@@ -88,3 +88,7 @@ add_custom_target(
 
 add_custom_target(transmission-1.42 ALL DEPENDS transmission-1.42-runtime)
 register_bug_target(transmission-1.42 "${BINARY}")
+
+# Ensure export never races ahead of ExternalProject output generation on
+# first parallel builds.
+add_dependencies(transmission-1.42-export transmission-1.42-build)
