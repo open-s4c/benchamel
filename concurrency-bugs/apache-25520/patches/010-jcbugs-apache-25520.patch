@@ -1,0 +1,11 @@
+# Source: Benchamel local patch adapted from the original apache-25520 description.
+--- a/modules/loggers/mod_log_config.c
++++ b/modules/loggers/mod_log_config.c
+@@ -1341,6 +1341,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
+     else {
+         for (i = 0, s = &buf->outbuf[buf->outcnt]; i < nelts; ++i) {
+             memcpy(s, strs[i], strl[i]);
++            usleep(1000);
+             s += strl[i];
+         }
+         buf->outcnt += len;

@@ -1,5 +1,5 @@
 require_distfile(
-  TARGET cherokee-bug1
+  TARGET cherokee-0.9.2
   NAME cherokee-0.9.2
   URL "http://www.cherokee-project.com/download/0.9/0.9.2/cherokee-0.9.2.tar.gz"
   HASH "b4eab6ec6817e93bcd48e10ade29cb9cf5212febaa8055f66fd11aa8f4fad71e"
@@ -8,15 +8,15 @@ require_distfile(
 
 set(INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/install")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
-set(CONFIG_FILE "${CMAKE_BINARY_DIR}/bin/cherokee-bug1.conf")
+set(CONFIG_FILE "${CMAKE_BINARY_DIR}/bin/cherokee-0.9.2.conf")
 set(WORKER_PATH "${INSTALL_DIR}/sbin/cherokee-worker")
 set(C_FLAGS "${BENCHAMEL_C_FLAGS} -std=gnu11")
 set(
   CPPFLAGS
-  "-DBENCHAMEL_CHEROKEE_BUG1_ACCESS_LOG='\"${INSTALL_DIR}/var/log/cherokee.access\"'")
+  "-DBENCHAMEL_CHEROKEE_092_ACCESS_LOG='\"${INSTALL_DIR}/var/log/cherokee.access\"'")
 set(LDFLAGS "${BENCHAMEL_LDFLAGS} -Wl,-rpath,${INSTALL_DIR}/lib")
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cherokee-bug1.conf.in"
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/cherokee-0.9.2.conf.in"
                "${CONFIG_FILE}" @ONLY)
 
 add_custom_command(
@@ -52,5 +52,5 @@ add_custom_command(
           "${SOURCE_DIR}/cherokee/cherokee-client.h" "${CONFIG_FILE}"
   VERBATIM)
 
-add_custom_target(cherokee-bug1 ALL DEPENDS "${WORKER_PATH}" "${CONFIG_FILE}")
-register_bug_target(cherokee-bug1 "${WORKER_PATH}")
+add_custom_target(cherokee-0.9.2 ALL DEPENDS "${WORKER_PATH}" "${CONFIG_FILE}")
+register_bug_target(cherokee-0.9.2 "${WORKER_PATH}")

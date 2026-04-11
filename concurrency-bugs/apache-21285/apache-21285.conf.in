@@ -1,0 +1,36 @@
+ServerRoot "@INSTALL_DIR@"
+PidFile "@INSTALL_DIR@/logs/httpd.pid"
+Listen 127.0.0.1:50081
+ServerName 127.0.0.1
+ServerAdmin benchamel@local
+DocumentRoot "@INSTALL_DIR@/htdocs"
+ErrorLog "@INSTALL_DIR@/logs/error_log"
+LogLevel debug
+LockFile "@INSTALL_DIR@/logs/accept.lock"
+
+LoadModule cache_module modules/mod_cache.so
+LoadModule mem_cache_module modules/mod_mem_cache.so
+LoadModule benchamel_21285_module modules/mod_benchamel_21285.so
+
+StartServers 1
+MaxClients 4
+MinSpareThreads 1
+MaxSpareThreads 4
+ThreadsPerChild 4
+MaxRequestsPerChild 0
+ServerLimit 1
+
+CacheEnable mem /
+CacheDefaultExpire 1000
+CacheMaxExpire 3000
+CacheIgnoreCacheControl Off
+CacheIgnoreNoLastMod On
+MCacheSize 1
+MCacheMaxObjectCount 10
+MCacheMinObjectSize 1
+MCacheMaxObjectSize 300
+MCacheMaxStreamingBuffer 200
+
+<Location /trigger>
+  SetHandler benchamel-21285
+</Location>

@@ -1,0 +1,22 @@
+ServerRoot "@INSTALL_DIR@"
+PidFile "@INSTALL_DIR@/logs/httpd.pid"
+Listen 127.0.0.1:50081
+ServerName 127.0.0.1
+ServerAdmin benchamel@local
+DocumentRoot "@INSTALL_DIR@/htdocs"
+ErrorLog "@INSTALL_DIR@/logs/error_log"
+CustomLog "@INSTALL_DIR@/logs/access_log" common
+LogLevel debug
+LockFile "@INSTALL_DIR@/logs/accept.lock"
+
+LoadModule benchamel_25520_module modules/mod_benchamel_25520.so
+
+StartServers 1
+MaxClients 2
+MinSpareThreads 1
+MaxSpareThreads 2
+ThreadsPerChild 2
+MaxRequestsPerChild 0
+ServerLimit 1
+ThreadLimit 2
+BufferedLogs on

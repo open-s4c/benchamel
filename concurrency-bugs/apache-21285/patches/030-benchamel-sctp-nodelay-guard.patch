@@ -1,0 +1,22 @@
+# Source: Benchamel local compatibility patch for toolchains/headers where
+# APR_HAVE_SCTP is set but SCTP_NODELAY is not defined.
+--- a/srclib/apr/network_io/unix/sockopt.c
++++ b/srclib/apr/network_io/unix/sockopt.c
+@@ -248,7 +248,7 @@ APR_DECLARE(apr_status_t) apr_socket_opt_set(apr_socket_t *sock,
+             int optlevel = IPPROTO_TCP;
+             int optname = TCP_NODELAY;
+ 
+-#if APR_HAVE_SCTP
++#if APR_HAVE_SCTP && defined(SCTP_NODELAY)
+             if (sock->protocol == IPPROTO_SCTP) {
+                 optlevel = IPPROTO_SCTP;
+                 optname = SCTP_NODELAY;
+@@ -278,7 +278,7 @@ APR_DECLARE(apr_status_t) apr_socket_opt_set(apr_socket_t *sock,
+             int optlevel = IPPROTO_TCP;
+             int optname = TCP_NODELAY;
+ 
+-#if APR_HAVE_SCTP
++#if APR_HAVE_SCTP && defined(SCTP_NODELAY)
+             if (sock->protocol == IPPROTO_SCTP) {
+                 optlevel = IPPROTO_SCTP;
+                 optname = SCTP_NODELAY;
