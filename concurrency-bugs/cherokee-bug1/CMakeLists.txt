@@ -40,6 +40,7 @@ add_custom_command(
     "${CMAKE_COMMAND}" -E env "CFLAGS=${C_FLAGS}"
     "CXXFLAGS=${BENCHAMEL_CXX_FLAGS}" "LDFLAGS=${LDFLAGS}"
     "${SOURCE_DIR}/configure" "--prefix=${INSTALL_DIR}"
+    "--disable-tls"
   COMMAND "${CMAKE_MAKE_PROGRAM}" constants.h cherokee.conf.sample
           performance.conf.sample
   COMMAND "${CMAKE_MAKE_PROGRAM}" -C cherokee "CPPFLAGS=${CPPFLAGS}"
